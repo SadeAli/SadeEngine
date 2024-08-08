@@ -1,0 +1,3 @@
+/usr/bin/cmake -E rm -f CMakeFiles/myLeaf.dir/objects.a
+/usr/bin/x86_64-w64-mingw32-ar qc CMakeFiles/myLeaf.dir/objects.a @CMakeFiles/myLeaf.dir/objects1.rsp
+/usr/bin/x86_64-w64-mingw32-gcc -Wl,--whole-archive CMakeFiles/myLeaf.dir/objects.a -Wl,--no-whole-archive -o ../myLeaf.exe -Wl,--out-implib,libmyLeaf.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles/myLeaf.dir/linkLibs.rsp

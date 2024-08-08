@@ -1,0 +1,1 @@
+target_sources(${PROJECT_NAME} PRIVATE vec2.c vec3.c)

@@ -1,0 +1,74 @@
+[
+{
+  "directory": "/home/ali/mnt/project/code/everything/gameTests/myLeaf/build",
+  "command": "/usr/bin/cc -I/home/ali/mnt/project/code/everything/gameTests/myLeaf/src -I/home/ali/mnt/project/code/everything/gameTests/myLeaf/src/memory -I/home/ali/mnt/project/code/everything/gameTests/myLeaf/src/external -std=gnu2x -Wall -Wextra -Wunused -g -o src/CMakeFiles/myLeaf.dir/main.c.o -c /home/ali/mnt/project/code/everything/gameTests/myLeaf/src/main.c",
+  "file": "/home/ali/mnt/project/code/everything/gameTests/myLeaf/src/main.c",
+  "output": "src/CMakeFiles/myLeaf.dir/main.c.o"
+},
+{
+  "directory": "/home/ali/mnt/project/code/everything/gameTests/myLeaf/build",
+  "command": "/usr/bin/cc -I/home/ali/mnt/project/code/everything/gameTests/myLeaf/src -I/home/ali/mnt/project/code/everything/gameTests/myLeaf/src/memory -I/home/ali/mnt/project/code/everything/gameTests/myLeaf/src/external -std=gnu2x -Wall -Wextra -Wunused -g -o src/CMakeFiles/myLeaf.dir/window.c.o -c /home/ali/mnt/project/code/everything/gameTests/myLeaf/src/window.c",
+  "file": "/home/ali/mnt/project/code/everything/gameTests/myLeaf/src/window.c",
+  "output": "src/CMakeFiles/myLeaf.dir/window.c.o"
+},
+{
+  "directory": "/home/ali/mnt/project/code/everything/gameTests/myLeaf/build",
+  "command": "/usr/bin/cc -I/home/ali/mnt/project/code/everything/gameTests/myLeaf/src -I/home/ali/mnt/project/code/everything/gameTests/myLeaf/src/memory -I/home/ali/mnt/project/code/everything/gameTests/myLeaf/src/external -std=gnu2x -Wall -Wextra -Wunused -g -o src/CMakeFiles/myLeaf.dir/relativePosition/rp2d.c.o -c /home/ali/mnt/project/code/everything/gameTests/myLeaf/src/relativePosition/rp2d.c",
+  "file": "/home/ali/mnt/project/code/everything/gameTests/myLeaf/src/relativePosition/rp2d.c",
+  "output": "src/CMakeFiles/myLeaf.dir/relativePosition/rp2d.c.o"
+},
+{
+  "directory": "/home/ali/mnt/project/code/everything/gameTests/myLeaf/build",
+  "command": "/usr/bin/cc -I/home/ali/mnt/project/code/everything/gameTests/myLeaf/src -I/home/ali/mnt/project/code/everything/gameTests/myLeaf/src/memory -I/home/ali/mnt/project/code/everything/gameTests/myLeaf/src/external -std=gnu2x -Wall -Wextra -Wunused -g -o src/CMakeFiles/myLeaf.dir/relativePosition/rp3d.c.o -c /home/ali/mnt/project/code/everything/gameTests/myLeaf/src/relativePosition/rp3d.c",
+  "file": "/home/ali/mnt/project/code/everything/gameTests/myLeaf/src/relativePosition/rp3d.c",
+  "output": "src/CMakeFiles/myLeaf.dir/relativePosition/rp3d.c.o"
+},
+{
+  "directory": "/home/ali/mnt/project/code/everything/gameTests/myLeaf/build",
+  "command": "/usr/bin/cc -I/home/ali/mnt/project/code/everything/gameTests/myLeaf/src -I/home/ali/mnt/project/code/everything/gameTests/myLeaf/src/memory -I/home/ali/mnt/project/code/everything/gameTests/myLeaf/src/external -std=gnu2x -Wall -Wextra -Wunused -g -o src/CMakeFiles/myLeaf.dir/editorClasses/dragable.c.o -c /home/ali/mnt/project/code/everything/gameTests/myLeaf/src/editorClasses/dragable.c",
+  "file": "/home/ali/mnt/project/code/everything/gameTests/myLeaf/src/editorClasses/dragable.c",
+  "output": "src/CMakeFiles/myLeaf.dir/editorClasses/dragable.c.o"
+},
+{
+  "directory": "/home/ali/mnt/project/code/everything/gameTests/myLeaf/build",
+  "command": "/usr/bin/cc -I/home/ali/mnt/project/code/everything/gameTests/myLeaf/src -I/home/ali/mnt/project/code/everything/gameTests/myLeaf/src/memory -I/home/ali/mnt/project/code/everything/gameTests/myLeaf/src/external -std=gnu2x -Wall -Wextra -Wunused -g -o src/CMakeFiles/myLeaf.dir/vector/vec2.c.o -c /home/ali/mnt/project/code/everything/gameTests/myLeaf/src/vector/vec2.c",
+  "file": "/home/ali/mnt/project/code/everything/gameTests/myLeaf/src/vector/vec2.c",
+  "output": "src/CMakeFiles/myLeaf.dir/vector/vec2.c.o"
+},
+{
+  "directory": "/home/ali/mnt/project/code/everything/gameTests/myLeaf/build",
+  "command": "/usr/bin/cc -I/home/ali/mnt/project/code/everything/gameTests/myLeaf/src -I/home/ali/mnt/project/code/everything/gameTests/myLeaf/src/memory -I/home/ali/mnt/project/code/everything/gameTests/myLeaf/src/external -std=gnu2x -Wall -Wextra -Wunused -g -o src/CMakeFiles/myLeaf.dir/vector/vec3.c.o -c /home/ali/mnt/project/code/everything/gameTests/myLeaf/src/vector/vec3.c",
+  "file": "/home/ali/mnt/project/code/everything/gameTests/myLeaf/src/vector/vec3.c",
+  "output": "src/CMakeFiles/myLeaf.dir/vector/vec3.c.o"
+},
+{
+  "directory": "/home/ali/mnt/project/code/everything/gameTests/myLeaf/build",
+  "command": "/usr/bin/cc -I/home/ali/mnt/project/code/everything/gameTests/myLeaf/src -I/home/ali/mnt/project/code/everything/gameTests/myLeaf/src/memory -I/home/ali/mnt/project/code/everything/gameTests/myLeaf/src/external -std=gnu2x -Wall -Wextra -Wunused -g -o src/CMakeFiles/myLeaf.dir/memory/memory.c.o -c /home/ali/mnt/project/code/everything/gameTests/myLeaf/src/memory/memory.c",
+  "file": "/home/ali/mnt/project/code/everything/gameTests/myLeaf/src/memory/memory.c",
+  "output": "src/CMakeFiles/myLeaf.dir/memory/memory.c.o"
+},
+{
+  "directory": "/home/ali/mnt/project/code/everything/gameTests/myLeaf/build",
+  "command": "/usr/bin/cc -I/home/ali/mnt/project/code/everything/gameTests/myLeaf/src -I/home/ali/mnt/project/code/everything/gameTests/myLeaf/src/memory -I/home/ali/mnt/project/code/everything/gameTests/myLeaf/src/external -std=gnu2x -Wall -Wextra -Wunused -g -o src/CMakeFiles/myLeaf.dir/memory/arrayDynamics.c.o -c /home/ali/mnt/project/code/everything/gameTests/myLeaf/src/memory/arrayDynamics.c",
+  "file": "/home/ali/mnt/project/code/everything/gameTests/myLeaf/src/memory/arrayDynamics.c",
+  "output": "src/CMakeFiles/myLeaf.dir/memory/arrayDynamics.c.o"
+},
+{
+  "directory": "/home/ali/mnt/project/code/everything/gameTests/myLeaf/build",
+  "command": "/usr/bin/cc -I/home/ali/mnt/project/code/everything/gameTests/myLeaf/src -I/home/ali/mnt/project/code/everything/gameTests/myLeaf/src/memory -I/home/ali/mnt/project/code/everything/gameTests/myLeaf/src/external -std=gnu2x -Wall -Wextra -Wunused -g -o src/CMakeFiles/myLeaf.dir/memory/arrayList.c.o -c /home/ali/mnt/project/code/everything/gameTests/myLeaf/src/memory/arrayList.c",
+  "file": "/home/ali/mnt/project/code/everything/gameTests/myLeaf/src/memory/arrayList.c",
+  "output": "src/CMakeFiles/myLeaf.dir/memory/arrayList.c.o"
+},
+{
+  "directory": "/home/ali/mnt/project/code/everything/gameTests/myLeaf/build",
+  "command": "/usr/bin/cc -I/home/ali/mnt/project/code/everything/gameTests/myLeaf/src -I/home/ali/mnt/project/code/everything/gameTests/myLeaf/src/memory -I/home/ali/mnt/project/code/everything/gameTests/myLeaf/src/external -std=gnu2x -Wall -Wextra -Wunused -g -o src/CMakeFiles/myLeaf.dir/2d/trailLine2d.c.o -c /home/ali/mnt/project/code/everything/gameTests/myLeaf/src/2d/trailLine2d.c",
+  "file": "/home/ali/mnt/project/code/everything/gameTests/myLeaf/src/2d/trailLine2d.c",
+  "output": "src/CMakeFiles/myLeaf.dir/2d/trailLine2d.c.o"
+},
+{
+  "directory": "/home/ali/mnt/project/code/everything/gameTests/myLeaf/build",
+  "command": "/usr/bin/cc -I/home/ali/mnt/project/code/everything/gameTests/myLeaf/src -I/home/ali/mnt/project/code/everything/gameTests/myLeaf/src/memory -I/home/ali/mnt/project/code/everything/gameTests/myLeaf/src/external -std=gnu2x -Wall -Wextra -Wunused -g -o src/CMakeFiles/myLeaf.dir/external/gl.c.o -c /home/ali/mnt/project/code/everything/gameTests/myLeaf/src/external/gl.c",
+  "file": "/home/ali/mnt/project/code/everything/gameTests/myLeaf/src/external/gl.c",
+  "output": "src/CMakeFiles/myLeaf.dir/external/gl.c.o"
+}
+]

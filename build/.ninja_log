@@ -1,0 +1,24 @@
+# ninja log v6
+2	9	1723118635271771400	clean	a31eedcededa8236
+83	179	1723118637174652400	myLeaf	b88480cc15638b90
+14	58	1723118637105677400	src/CMakeFiles/myLeaf.dir/2d/trailLine2d.c.o	a7da3f8b88a9c545
+4	83	1723118637101750600	src/CMakeFiles/myLeaf.dir/main.c.o	f7dccbe3e81e69a1
+13	56	1723118637105144500	src/CMakeFiles/myLeaf.dir/memory/arrayList.c.o	487cf6a1a79d86df
+12	59	1723118637103364900	src/CMakeFiles/myLeaf.dir/relativePosition/rp3d.c.o	1a7696e87d547de8
+11	58	1723118637103060200	src/CMakeFiles/myLeaf.dir/relativePosition/rp2d.c.o	7f8cb7831f012a41
+11	47	1723118637102596900	src/CMakeFiles/myLeaf.dir/window.c.o	a6627bb23f184870
+13	57	1723118637104844900	src/CMakeFiles/myLeaf.dir/memory/arrayDynamics.c.o	ecf10c8bc6ed2536
+13	35	1723118637104280900	src/CMakeFiles/myLeaf.dir/vector/vec3.c.o	9c5e15c44e289d47
+12	60	1723118637103698200	src/CMakeFiles/myLeaf.dir/editorClasses/dragable.c.o	31072205d6d1f106
+13	47	1723118637104538600	src/CMakeFiles/myLeaf.dir/memory/memory.c.o	375bad36fe754c33
+12	35	1723118637104005300	src/CMakeFiles/myLeaf.dir/vector/vec2.c.o	bc6a881de281e8d4
+6	35	1723130810744541000	src/CMakeFiles/myLeaf.dir/vector/vec3.c.o	719add0d63452bd3
+6	35	1723130810744244400	src/CMakeFiles/myLeaf.dir/vector/vec2.c.o	93bdf8365d206492
+4	39	1723130810743067200	src/CMakeFiles/myLeaf.dir/window.c.o	2fbfc2ce95c50c5f
+6	49	1723130810744847700	src/CMakeFiles/myLeaf.dir/memory/memory.c.o	68e5c8b0564e32c5
+5	56	1723130810743336900	src/CMakeFiles/myLeaf.dir/relativePosition/rp2d.c.o	62448f277c186994
+6	57	1723130810745128900	src/CMakeFiles/myLeaf.dir/memory/arrayDynamics.c.o	adb39fa9e0e2e39c
+5	60	1723130810743976600	src/CMakeFiles/myLeaf.dir/editorClasses/dragable.c.o	f45a91172210b0d9
+7	63	1723130810745822300	src/CMakeFiles/myLeaf.dir/2d/trailLine2d.c.o	8a66b7d7784380fe
+5	63	1723130810743677600	src/CMakeFiles/myLeaf.dir/relativePosition/rp3d.c.o	88d91f0b8927a925
+7	63	1723130810745446900	src/CMakeFiles/myLeaf.dir/memory/arrayList.c.o	1048ed276144ff7d
