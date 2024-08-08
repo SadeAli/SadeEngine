@@ -1,7 +1,6 @@
 #pragma once
 
 #include <raylib.h>
-
 #include "relativePosition.h"
 #include "vec.h"
 
@@ -11,7 +10,6 @@ typedef struct Dragable2D_t
     Rectangle collisionRect;
 
     vec2 dragOffset;
-
     bool beingDragged : 1;
 } Dragable2D;
 

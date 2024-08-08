@@ -67,8 +67,8 @@
 },
 {
   "directory": "/home/ali/mnt/project/code/everything/gameTests/myLeaf/build",
-  "command": "/usr/bin/cc -I/home/ali/mnt/project/code/everything/gameTests/myLeaf/src -I/home/ali/mnt/project/code/everything/gameTests/myLeaf/src/memory -I/home/ali/mnt/project/code/everything/gameTests/myLeaf/src/external -std=gnu2x -Wall -Wextra -Wunused -g -o src/CMakeFiles/myLeaf.dir/external/gl.c.o -c /home/ali/mnt/project/code/everything/gameTests/myLeaf/src/external/gl.c",
-  "file": "/home/ali/mnt/project/code/everything/gameTests/myLeaf/src/external/gl.c",
-  "output": "src/CMakeFiles/myLeaf.dir/external/gl.c.o"
+  "command": "/usr/bin/cc -I/home/ali/mnt/project/code/everything/gameTests/myLeaf/src -I/home/ali/mnt/project/code/everything/gameTests/myLeaf/src/memory -I/home/ali/mnt/project/code/everything/gameTests/myLeaf/src/external -std=gnu2x -Wall -Wextra -Wunused -g -o src/CMakeFiles/myLeaf.dir/external/glad.c.o -c /home/ali/mnt/project/code/everything/gameTests/myLeaf/src/external/glad.c",
+  "file": "/home/ali/mnt/project/code/everything/gameTests/myLeaf/src/external/glad.c",
+  "output": "src/CMakeFiles/myLeaf.dir/external/glad.c.o"
 }
 ]

@@ -150,8 +150,8 @@ build src/CMakeFiles/myLeaf.dir/2d/trailLine2d.c.o: C_COMPILER__myLeaf_unscanned
   OBJECT_DIR = src/CMakeFiles/myLeaf.dir
   OBJECT_FILE_DIR = src/CMakeFiles/myLeaf.dir/2d
 
-build src/CMakeFiles/myLeaf.dir/external/gl.c.o: C_COMPILER__myLeaf_unscanned_ /home/ali/mnt/project/code/everything/gameTests/myLeaf/src/external/gl.c || cmake_object_order_depends_target_myLeaf
-  DEP_FILE = src/CMakeFiles/myLeaf.dir/external/gl.c.o.d
+build src/CMakeFiles/myLeaf.dir/external/glad.c.o: C_COMPILER__myLeaf_unscanned_ /home/ali/mnt/project/code/everything/gameTests/myLeaf/src/external/glad.c || cmake_object_order_depends_target_myLeaf
+  DEP_FILE = src/CMakeFiles/myLeaf.dir/external/glad.c.o.d
   FLAGS = -std=gnu2x -Wall -Wextra -Wunused -g
   INCLUDES = -I/home/ali/mnt/project/code/everything/gameTests/myLeaf/src -I/home/ali/mnt/project/code/everything/gameTests/myLeaf/src/memory -I/home/ali/mnt/project/code/everything/gameTests/myLeaf/src/external
   OBJECT_DIR = src/CMakeFiles/myLeaf.dir
@@ -165,7 +165,8 @@ build src/CMakeFiles/myLeaf.dir/external/gl.c.o: C_COMPILER__myLeaf_unscanned_ /
 #############################################
 # Link the executable myLeaf
 
-build myLeaf: C_EXECUTABLE_LINKER__myLeaf_ src/CMakeFiles/myLeaf.dir/main.c.o src/CMakeFiles/myLeaf.dir/window.c.o src/CMakeFiles/myLeaf.dir/relativePosition/rp2d.c.o src/CMakeFiles/myLeaf.dir/relativePosition/rp3d.c.o src/CMakeFiles/myLeaf.dir/editorClasses/dragable.c.o src/CMakeFiles/myLeaf.dir/vector/vec2.c.o src/CMakeFiles/myLeaf.dir/vector/vec3.c.o src/CMakeFiles/myLeaf.dir/memory/memory.c.o src/CMakeFiles/myLeaf.dir/memory/arrayDynamics.c.o src/CMakeFiles/myLeaf.dir/memory/arrayList.c.o src/CMakeFiles/myLeaf.dir/2d/trailLine2d.c.o src/CMakeFiles/myLeaf.dir/external/gl.c.o
+build myLeaf: C_EXECUTABLE_LINKER__myLeaf_ src/CMakeFiles/myLeaf.dir/main.c.o src/CMakeFiles/myLeaf.dir/window.c.o src/CMakeFiles/myLeaf.dir/relativePosition/rp2d.c.o src/CMakeFiles/myLeaf.dir/relativePosition/rp3d.c.o src/CMakeFiles/myLeaf.dir/editorClasses/dragable.c.o src/CMakeFiles/myLeaf.dir/vector/vec2.c.o src/CMakeFiles/myLeaf.dir/vector/vec3.c.o src/CMakeFiles/myLeaf.dir/memory/memory.c.o src/CMakeFiles/myLeaf.dir/memory/arrayDynamics.c.o src/CMakeFiles/myLeaf.dir/memory/arrayList.c.o src/CMakeFiles/myLeaf.dir/2d/trailLine2d.c.o src/CMakeFiles/myLeaf.dir/external/glad.c.o
+  LINK_LIBRARIES = -lglfw  -lraylib
   OBJECT_DIR = src/CMakeFiles/myLeaf.dir
   POST_BUILD = cd /home/ali/mnt/project/code/everything/gameTests/myLeaf/build/src && /usr/bin/cmake -E copy_directory /home/ali/mnt/project/code/everything/gameTests/myLeaf/resources /home/ali/mnt/project/code/everything/gameTests/myLeaf/build/resources
   PRE_LINK = :

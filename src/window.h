@@ -1,5 +1,7 @@
 #pragma once
 
+#include <GLFW/glfw3.h>
+
 typedef struct WindowSettings
 {
     char *title;
@@ -10,9 +12,14 @@ typedef struct WindowSettings
         int width;
         int height;
     };
-    
+
     int fps;
 } WindowSettings;
+
+typedef struct Window_t {
+    GLFWwindow *glfwWindow;
+    WindowSettings settings;
+} Window;
 
 /**
  * @brief an initializer for window calls init window with default window settings
@@ -20,5 +27,7 @@ typedef struct WindowSettings
 #define INIT_WINDOW(...)                                                                                               \
     initWindow(&(WindowSettings){.width = 1920, .height = 1080, .fps = 60, .title = "myLeaf", __VA_ARGS__})
 
-void initWindow(const WindowSettings ws[static 1]);
-WindowSettings initDefaultWindow();
+Window init_window(const WindowSettings ws[static 1]);
+Window init_windowDefault();
+bool window_shouldClose(Window window);
+void window_pollEvents();

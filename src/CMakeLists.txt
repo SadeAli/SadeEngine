@@ -20,6 +20,8 @@ add_subdirectory(external)
 
 target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wunused)
 
+target_link_libraries(${PROJECT_NAME} PRIVATE glfw raylib)
+
 # Add resources
 add_custom_command(
   TARGET ${PROJECT_NAME}
