@@ -18,7 +18,6 @@ typedef struct WindowSettings
 
 typedef struct Window_t {
     GLFWwindow *glfwWindow;
-    WindowSettings settings;
 } Window;
 
 /**
@@ -27,7 +26,12 @@ typedef struct Window_t {
 #define INIT_WINDOW(...)                                                                                               \
     initWindow(&(WindowSettings){.width = 1920, .height = 1080, .fps = 60, .title = "myLeaf", __VA_ARGS__})
 
+// window settings related
+WindowSettings init_windowSettingsDefault();
+
+// window related
 Window init_window(const WindowSettings ws[static 1]);
 Window init_windowDefault();
 bool window_shouldClose(Window window);
 void window_pollEvents();
+void window_swapBuffers(Window window);

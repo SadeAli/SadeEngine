@@ -22,17 +22,21 @@ struct Engine
 
 int main(void)
 {
-    // TODO: implement a good window manager
-    Window _window = init_windowDefault();
-    GLFWwindow *window = _window.glfwWindow;
+    // TODO: implement a decent window manager
+    Window window = init_windowDefault();
 
-    while(!glfwWindowShouldClose(window)) {
-        glfwPollEvents();
+    // TODO: initializers
 
-        glClearColor(18 / 255.0, 18 / 255.0, 18 / 255.0, 1);
+    glClearColor(18 / 255.0, 18 / 255.0, 18 / 255.0, 1);
+    while(!window_shouldClose(window)) {
+        // TODO: handle logic here
+
+        // render start
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glfwSwapBuffers(window);
+        window_swapBuffers(window);
+        // render end
+        window_pollEvents();
     }
 
     return 0;

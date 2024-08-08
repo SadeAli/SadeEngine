@@ -7,6 +7,7 @@ static bool glfwStarted = 0;
 
 Window init_window(const WindowSettings ws[static 1])
 {
+    // only 1 window is permitted
     assert(!glfwStarted);
     glfwInit();
     glfwStarted = true;
@@ -32,7 +33,6 @@ Window init_window(const WindowSettings ws[static 1])
     // glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
     return (Window) {
         .glfwWindow = glfwWindow,
-        .settings = *ws,
     };
 }
 
@@ -57,4 +57,8 @@ bool window_shouldClose(Window window) {
 
 void window_pollEvents() {
     glfwPollEvents();
+}
+
+void window_swapBuffers(Window window) {
+    glfwSwapBuffers(window.glfwWindow);
 }
