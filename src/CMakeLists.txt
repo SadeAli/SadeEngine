@@ -16,6 +16,7 @@ add_subdirectory(vector)
 add_subdirectory(memory)
 add_subdirectory(2d)
 add_subdirectory(external)
+add_subdirectory(render)
 
 target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wunused)
 

@@ -146,6 +146,9 @@
 		},
 		{
 			"path" : "src/external/CMakeLists.txt"
+		},
+		{
+			"path" : "src/render/CMakeLists.txt"
 		}
 	],
 	"kind" : "cmakeFiles",

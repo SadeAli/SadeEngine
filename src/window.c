@@ -2,6 +2,9 @@
 #include "window.h"
 #include "GLFW/glfw3.h"
 #include <assert.h>
+#include <stdio.h>
+#include <threads.h>
+#include <time.h>
 
 static bool glfwStarted = 0;
 
@@ -24,7 +27,12 @@ Window init_window(const WindowSettings ws[static 1])
 
     // glfwSetWindowAttrib(glfwWindow, GLFW_RESIZABLE, 1);
     glfwMakeContextCurrent(glfwWindow);
-    
+
+    // TODO: change glfw swap interval (1) with an optional version
+    //
+    // enable frame cap
+    glfwSwapInterval(1);
+
     // load opengl functions
     int version = gladLoadGL();
     assert (version != 0);
@@ -33,6 +41,7 @@ Window init_window(const WindowSettings ws[static 1])
     // glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
     return (Window) {
         .glfwWindow = glfwWindow,
+        .settings = *ws,
     };
 }
 
@@ -47,18 +56,38 @@ Window init_windowDefault() {
     return init_window(&ws);
 }
 
-bool window_shouldClose(Window window) {
-    if (window.glfwWindow == nullptr) {
+bool window_shouldClose(Window *window) {
+    if (window->glfwWindow == nullptr) {
         return true;
     }
 
-    return glfwWindowShouldClose(window.glfwWindow);
+    return glfwWindowShouldClose(window->glfwWindow);
 }
 
 void window_pollEvents() {
     glfwPollEvents();
 }
 
-void window_swapBuffers(Window window) {
-    glfwSwapBuffers(window.glfwWindow);
+void window_swapBuffers(Window *window) {
+    glfwSwapBuffers(window->glfwWindow);
+
+    const double currentTime = glfwGetTime();
+
+    window->frameTime = currentTime - window->lastFrameUpdate;
+    window->lastFrameUpdate = currentTime;
+
+    double timePerFrame = 1000.0f / window->settings.fps;
+    if (window->frameTime < timePerFrame) {
+        double timeUntilNextFrame = timePerFrame - window->frameTime;
+
+        struct timespec sleepTime;
+        sleepTime.tv_sec = (time_t)(timeUntilNextFrame / 1000); // Full seconds
+        sleepTime.tv_nsec = (long)((timeUntilNextFrame - (sleepTime.tv_sec * 1000)) * 1000000); // Remainder in nanoseconds
+
+        thrd_sleep(&sleepTime, nullptr);
+    }
+}
+
+double window_getFrameTime(Window *window) {
+    return window->frameTime;
 }

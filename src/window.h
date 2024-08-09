@@ -18,6 +18,14 @@ typedef struct WindowSettings
 
 typedef struct Window_t {
     GLFWwindow *glfwWindow;
+
+    struct {
+        double lastFrameUpdate;
+        double frameTime;
+    };
+
+    WindowSettings settings;
+
 } Window;
 
 /**
@@ -32,6 +40,7 @@ WindowSettings init_windowSettingsDefault();
 // window related
 Window init_window(const WindowSettings ws[static 1]);
 Window init_windowDefault();
-bool window_shouldClose(Window window);
+bool window_shouldClose(Window *window);
+void window_swapBuffers(Window *window);
+double window_getFrameTime(Window *window);
 void window_pollEvents();
-void window_swapBuffers(Window window);

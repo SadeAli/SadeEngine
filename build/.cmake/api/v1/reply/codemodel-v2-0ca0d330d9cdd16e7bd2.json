@@ -16,7 +16,11 @@
 						"string" : "3.21"
 					},
 					"projectIndex" : 0,
-					"source" : "."
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0
+					]
 				},
 				{
 					"build" : "src",
@@ -27,7 +31,8 @@
 						4,
 						5,
 						6,
-						7
+						7,
+						8
 					],
 					"jsonFile" : "directory-src-b6cf2213fc5053b67c22.json",
 					"minimumCMakeVersion" : 
@@ -39,7 +44,7 @@
 					"source" : "src",
 					"targetIndexes" : 
 					[
-						0
+						1
 					]
 				},
 				{
@@ -107,6 +112,17 @@
 					"parentIndex" : 1,
 					"projectIndex" : 0,
 					"source" : "src/external"
+				},
+				{
+					"build" : "src/render",
+					"jsonFile" : "directory-src.render-d480f5378d47143daba2.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.21"
+					},
+					"parentIndex" : 1,
+					"projectIndex" : 0,
+					"source" : "src/render"
 				}
 			],
 			"name" : "",
@@ -122,21 +138,30 @@
 						4,
 						5,
 						6,
-						7
+						7,
+						8
 					],
 					"name" : "myLeaf",
 					"targetIndexes" : 
 					[
-						0
+						0,
+						1
 					]
 				}
 			],
 			"targets" : 
 			[
 				{
+					"directoryIndex" : 0,
+					"id" : "FinalMessage::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-FinalMessage-b3fc9c1e55896181f897.json",
+					"name" : "FinalMessage",
+					"projectIndex" : 0
+				},
+				{
 					"directoryIndex" : 1,
 					"id" : "myLeaf::@145eef247bfb46b6828c",
-					"jsonFile" : "target-myLeaf-3ee09b2ceff698e9e376.json",
+					"jsonFile" : "target-myLeaf-35e2c72e3f9c3ee39a47.json",
 					"name" : "myLeaf",
 					"projectIndex" : 0
 				}

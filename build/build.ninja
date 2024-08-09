@@ -37,6 +37,12 @@ include CMakeFiles/rules.ninja
 cmake_ninja_workdir = /home/ali/mnt/project/code/everything/gameTests/myLeaf/build/
 
 #############################################
+# Utility command for FinalMessage
+
+build FinalMessage: phony CMakeFiles/FinalMessage myLeaf
+
+
+#############################################
 # Utility command for edit_cache
 
 build CMakeFiles/edit_cache.util: CUSTOM_COMMAND
@@ -58,6 +64,14 @@ build CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
   restat = 1
 
 build rebuild_cache: phony CMakeFiles/rebuild_cache.util
+
+
+#############################################
+# Custom command for CMakeFiles/FinalMessage
+
+build CMakeFiles/FinalMessage | ${cmake_ninja_workdir}CMakeFiles/FinalMessage: CUSTOM_COMMAND || myLeaf
+  COMMAND = cd /home/ali/mnt/project/code/everything/gameTests/myLeaf/build && /usr/bin/cmake -E cmake_echo_color --cyan Compilation\ is\ over!
+  DESC = compiler: clang
 
 # =============================================================================
 # Write statements declared in CMakeLists.txt:
@@ -157,6 +171,13 @@ build src/CMakeFiles/myLeaf.dir/external/glad.c.o: C_COMPILER__myLeaf_unscanned_
   OBJECT_DIR = src/CMakeFiles/myLeaf.dir
   OBJECT_FILE_DIR = src/CMakeFiles/myLeaf.dir/external
 
+build src/CMakeFiles/myLeaf.dir/render/shader.c.o: C_COMPILER__myLeaf_unscanned_ /home/ali/mnt/project/code/everything/gameTests/myLeaf/src/render/shader.c || cmake_object_order_depends_target_myLeaf
+  DEP_FILE = src/CMakeFiles/myLeaf.dir/render/shader.c.o.d
+  FLAGS = -std=gnu2x -Wall -Wextra -Wunused -g
+  INCLUDES = -I/home/ali/mnt/project/code/everything/gameTests/myLeaf/src -I/home/ali/mnt/project/code/everything/gameTests/myLeaf/src/memory -I/home/ali/mnt/project/code/everything/gameTests/myLeaf/src/external
+  OBJECT_DIR = src/CMakeFiles/myLeaf.dir
+  OBJECT_FILE_DIR = src/CMakeFiles/myLeaf.dir/render
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target myLeaf
@@ -165,7 +186,7 @@ build src/CMakeFiles/myLeaf.dir/external/glad.c.o: C_COMPILER__myLeaf_unscanned_
 #############################################
 # Link the executable myLeaf
 
-build myLeaf: C_EXECUTABLE_LINKER__myLeaf_ src/CMakeFiles/myLeaf.dir/main.c.o src/CMakeFiles/myLeaf.dir/window.c.o src/CMakeFiles/myLeaf.dir/relativePosition/rp2d.c.o src/CMakeFiles/myLeaf.dir/relativePosition/rp3d.c.o src/CMakeFiles/myLeaf.dir/editorClasses/dragable.c.o src/CMakeFiles/myLeaf.dir/vector/vec2.c.o src/CMakeFiles/myLeaf.dir/vector/vec3.c.o src/CMakeFiles/myLeaf.dir/memory/memory.c.o src/CMakeFiles/myLeaf.dir/memory/arrayDynamics.c.o src/CMakeFiles/myLeaf.dir/memory/arrayList.c.o src/CMakeFiles/myLeaf.dir/2d/trailLine2d.c.o src/CMakeFiles/myLeaf.dir/external/glad.c.o
+build myLeaf: C_EXECUTABLE_LINKER__myLeaf_ src/CMakeFiles/myLeaf.dir/main.c.o src/CMakeFiles/myLeaf.dir/window.c.o src/CMakeFiles/myLeaf.dir/relativePosition/rp2d.c.o src/CMakeFiles/myLeaf.dir/relativePosition/rp3d.c.o src/CMakeFiles/myLeaf.dir/editorClasses/dragable.c.o src/CMakeFiles/myLeaf.dir/vector/vec2.c.o src/CMakeFiles/myLeaf.dir/vector/vec3.c.o src/CMakeFiles/myLeaf.dir/memory/memory.c.o src/CMakeFiles/myLeaf.dir/memory/arrayDynamics.c.o src/CMakeFiles/myLeaf.dir/memory/arrayList.c.o src/CMakeFiles/myLeaf.dir/2d/trailLine2d.c.o src/CMakeFiles/myLeaf.dir/external/glad.c.o src/CMakeFiles/myLeaf.dir/render/shader.c.o
   LINK_LIBRARIES = -lglfw  -lraylib
   OBJECT_DIR = src/CMakeFiles/myLeaf.dir
   POST_BUILD = cd /home/ali/mnt/project/code/everything/gameTests/myLeaf/build/src && /usr/bin/cmake -E copy_directory /home/ali/mnt/project/code/everything/gameTests/myLeaf/resources /home/ali/mnt/project/code/everything/gameTests/myLeaf/build/resources
@@ -372,6 +393,35 @@ build src/external/CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
 build src/external/rebuild_cache: phony src/external/CMakeFiles/rebuild_cache.util
 
 # =============================================================================
+# Write statements declared in CMakeLists.txt:
+# /home/ali/mnt/project/code/everything/gameTests/myLeaf/src/CMakeLists.txt
+# =============================================================================
+
+
+#############################################
+# Utility command for edit_cache
+
+build src/render/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
+  COMMAND = cd /home/ali/mnt/project/code/everything/gameTests/myLeaf/build/src/render && /usr/bin/ccmake -S/home/ali/mnt/project/code/everything/gameTests/myLeaf -B/home/ali/mnt/project/code/everything/gameTests/myLeaf/build
+  DESC = Running CMake cache editor...
+  pool = console
+  restat = 1
+
+build src/render/edit_cache: phony src/render/CMakeFiles/edit_cache.util
+
+
+#############################################
+# Utility command for rebuild_cache
+
+build src/render/CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
+  COMMAND = cd /home/ali/mnt/project/code/everything/gameTests/myLeaf/build/src/render && /usr/bin/cmake --regenerate-during-build -S/home/ali/mnt/project/code/everything/gameTests/myLeaf -B/home/ali/mnt/project/code/everything/gameTests/myLeaf/build
+  DESC = Running CMake to regenerate build system...
+  pool = console
+  restat = 1
+
+build src/render/rebuild_cache: phony src/render/CMakeFiles/rebuild_cache.util
+
+# =============================================================================
 # Target aliases.
 
 # =============================================================================
@@ -382,14 +432,14 @@ build src/external/rebuild_cache: phony src/external/CMakeFiles/rebuild_cache.ut
 #############################################
 # Folder: /home/ali/mnt/project/code/everything/gameTests/myLeaf/build
 
-build all: phony src/all
+build all: phony FinalMessage src/all
 
 # =============================================================================
 
 #############################################
 # Folder: /home/ali/mnt/project/code/everything/gameTests/myLeaf/build/src
 
-build src/all: phony myLeaf src/relativePosition/all src/editorClasses/all src/vector/all src/memory/all src/2d/all src/external/all
+build src/all: phony myLeaf src/relativePosition/all src/editorClasses/all src/vector/all src/memory/all src/2d/all src/external/all src/render/all
 
 # =============================================================================
 
@@ -429,6 +479,13 @@ build src/relativePosition/all: phony
 # =============================================================================
 
 #############################################
+# Folder: /home/ali/mnt/project/code/everything/gameTests/myLeaf/build/src/render
+
+build src/render/all: phony
+
+# =============================================================================
+
+#############################################
 # Folder: /home/ali/mnt/project/code/everything/gameTests/myLeaf/build/src/vector
 
 build src/vector/all: phony
@@ -440,14 +497,14 @@ build src/vector/all: phony
 #############################################
 # Re-run CMake if any of its inputs changed.
 
-build build.ninja: RERUN_CMAKE | /home/ali/mnt/project/code/everything/gameTests/myLeaf/CMakeLists.txt /home/ali/mnt/project/code/everything/gameTests/myLeaf/src/2d/CMakeLists.txt /home/ali/mnt/project/code/everything/gameTests/myLeaf/src/CMakeLists.txt /home/ali/mnt/project/code/everything/gameTests/myLeaf/src/editorClasses/CMakeLists.txt /home/ali/mnt/project/code/everything/gameTests/myLeaf/src/external/CMakeLists.txt /home/ali/mnt/project/code/everything/gameTests/myLeaf/src/memory/CMakeLists.txt /home/ali/mnt/project/code/everything/gameTests/myLeaf/src/relativePosition/CMakeLists.txt /home/ali/mnt/project/code/everything/gameTests/myLeaf/src/vector/CMakeLists.txt /usr/share/cmake/Modules/CMakeCInformation.cmake /usr/share/cmake/Modules/CMakeCXXInformation.cmake /usr/share/cmake/Modules/CMakeCommonLanguageInclude.cmake /usr/share/cmake/Modules/CMakeGenericSystem.cmake /usr/share/cmake/Modules/CMakeInitializeConfigs.cmake /usr/share/cmake/Modules/CMakeLanguageInformation.cmake /usr/share/cmake/Modules/CMakeSystemSpecificInformation.cmake /usr/share/cmake/Modules/CMakeSystemSpecificInitialize.cmake /usr/share/cmake/Modules/Compiler/CMakeCommonCompilerMacros.cmake /usr/share/cmake/Modules/Compiler/GNU-C.cmake /usr/share/cmake/Modules/Compiler/GNU-CXX.cmake /usr/share/cmake/Modules/Compiler/GNU.cmake /usr/share/cmake/Modules/Platform/Linux-GNU-C.cmake /usr/share/cmake/Modules/Platform/Linux-GNU-CXX.cmake /usr/share/cmake/Modules/Platform/Linux-GNU.cmake /usr/share/cmake/Modules/Platform/Linux-Initialize.cmake /usr/share/cmake/Modules/Platform/Linux.cmake /usr/share/cmake/Modules/Platform/UnixPaths.cmake CMakeCache.txt CMakeFiles/3.30.2/CMakeCCompiler.cmake CMakeFiles/3.30.2/CMakeCXXCompiler.cmake CMakeFiles/3.30.2/CMakeSystem.cmake
+build build.ninja: RERUN_CMAKE | /home/ali/mnt/project/code/everything/gameTests/myLeaf/CMakeLists.txt /home/ali/mnt/project/code/everything/gameTests/myLeaf/src/2d/CMakeLists.txt /home/ali/mnt/project/code/everything/gameTests/myLeaf/src/CMakeLists.txt /home/ali/mnt/project/code/everything/gameTests/myLeaf/src/editorClasses/CMakeLists.txt /home/ali/mnt/project/code/everything/gameTests/myLeaf/src/external/CMakeLists.txt /home/ali/mnt/project/code/everything/gameTests/myLeaf/src/memory/CMakeLists.txt /home/ali/mnt/project/code/everything/gameTests/myLeaf/src/relativePosition/CMakeLists.txt /home/ali/mnt/project/code/everything/gameTests/myLeaf/src/render/CMakeLists.txt /home/ali/mnt/project/code/everything/gameTests/myLeaf/src/vector/CMakeLists.txt /usr/share/cmake/Modules/CMakeCInformation.cmake /usr/share/cmake/Modules/CMakeCXXInformation.cmake /usr/share/cmake/Modules/CMakeCommonLanguageInclude.cmake /usr/share/cmake/Modules/CMakeGenericSystem.cmake /usr/share/cmake/Modules/CMakeInitializeConfigs.cmake /usr/share/cmake/Modules/CMakeLanguageInformation.cmake /usr/share/cmake/Modules/CMakeSystemSpecificInformation.cmake /usr/share/cmake/Modules/CMakeSystemSpecificInitialize.cmake /usr/share/cmake/Modules/Compiler/CMakeCommonCompilerMacros.cmake /usr/share/cmake/Modules/Compiler/GNU-C.cmake /usr/share/cmake/Modules/Compiler/GNU-CXX.cmake /usr/share/cmake/Modules/Compiler/GNU.cmake /usr/share/cmake/Modules/Platform/Linux-GNU-C.cmake /usr/share/cmake/Modules/Platform/Linux-GNU-CXX.cmake /usr/share/cmake/Modules/Platform/Linux-GNU.cmake /usr/share/cmake/Modules/Platform/Linux-Initialize.cmake /usr/share/cmake/Modules/Platform/Linux.cmake /usr/share/cmake/Modules/Platform/UnixPaths.cmake CMakeCache.txt CMakeFiles/3.30.2/CMakeCCompiler.cmake CMakeFiles/3.30.2/CMakeCXXCompiler.cmake CMakeFiles/3.30.2/CMakeSystem.cmake
   pool = console
 
 
 #############################################
 # A missing CMake input file is not an error.
 
-build /home/ali/mnt/project/code/everything/gameTests/myLeaf/CMakeLists.txt /home/ali/mnt/project/code/everything/gameTests/myLeaf/src/2d/CMakeLists.txt /home/ali/mnt/project/code/everything/gameTests/myLeaf/src/CMakeLists.txt /home/ali/mnt/project/code/everything/gameTests/myLeaf/src/editorClasses/CMakeLists.txt /home/ali/mnt/project/code/everything/gameTests/myLeaf/src/external/CMakeLists.txt /home/ali/mnt/project/code/everything/gameTests/myLeaf/src/memory/CMakeLists.txt /home/ali/mnt/project/code/everything/gameTests/myLeaf/src/relativePosition/CMakeLists.txt /home/ali/mnt/project/code/everything/gameTests/myLeaf/src/vector/CMakeLists.txt /usr/share/cmake/Modules/CMakeCInformation.cmake /usr/share/cmake/Modules/CMakeCXXInformation.cmake /usr/share/cmake/Modules/CMakeCommonLanguageInclude.cmake /usr/share/cmake/Modules/CMakeGenericSystem.cmake /usr/share/cmake/Modules/CMakeInitializeConfigs.cmake /usr/share/cmake/Modules/CMakeLanguageInformation.cmake /usr/share/cmake/Modules/CMakeSystemSpecificInformation.cmake /usr/share/cmake/Modules/CMakeSystemSpecificInitialize.cmake /usr/share/cmake/Modules/Compiler/CMakeCommonCompilerMacros.cmake /usr/share/cmake/Modules/Compiler/GNU-C.cmake /usr/share/cmake/Modules/Compiler/GNU-CXX.cmake /usr/share/cmake/Modules/Compiler/GNU.cmake /usr/share/cmake/Modules/Platform/Linux-GNU-C.cmake /usr/share/cmake/Modules/Platform/Linux-GNU-CXX.cmake /usr/share/cmake/Modules/Platform/Linux-GNU.cmake /usr/share/cmake/Modules/Platform/Linux-Initialize.cmake /usr/share/cmake/Modules/Platform/Linux.cmake /usr/share/cmake/Modules/Platform/UnixPaths.cmake CMakeCache.txt CMakeFiles/3.30.2/CMakeCCompiler.cmake CMakeFiles/3.30.2/CMakeCXXCompiler.cmake CMakeFiles/3.30.2/CMakeSystem.cmake: phony
+build /home/ali/mnt/project/code/everything/gameTests/myLeaf/CMakeLists.txt /home/ali/mnt/project/code/everything/gameTests/myLeaf/src/2d/CMakeLists.txt /home/ali/mnt/project/code/everything/gameTests/myLeaf/src/CMakeLists.txt /home/ali/mnt/project/code/everything/gameTests/myLeaf/src/editorClasses/CMakeLists.txt /home/ali/mnt/project/code/everything/gameTests/myLeaf/src/external/CMakeLists.txt /home/ali/mnt/project/code/everything/gameTests/myLeaf/src/memory/CMakeLists.txt /home/ali/mnt/project/code/everything/gameTests/myLeaf/src/relativePosition/CMakeLists.txt /home/ali/mnt/project/code/everything/gameTests/myLeaf/src/render/CMakeLists.txt /home/ali/mnt/project/code/everything/gameTests/myLeaf/src/vector/CMakeLists.txt /usr/share/cmake/Modules/CMakeCInformation.cmake /usr/share/cmake/Modules/CMakeCXXInformation.cmake /usr/share/cmake/Modules/CMakeCommonLanguageInclude.cmake /usr/share/cmake/Modules/CMakeGenericSystem.cmake /usr/share/cmake/Modules/CMakeInitializeConfigs.cmake /usr/share/cmake/Modules/CMakeLanguageInformation.cmake /usr/share/cmake/Modules/CMakeSystemSpecificInformation.cmake /usr/share/cmake/Modules/CMakeSystemSpecificInitialize.cmake /usr/share/cmake/Modules/Compiler/CMakeCommonCompilerMacros.cmake /usr/share/cmake/Modules/Compiler/GNU-C.cmake /usr/share/cmake/Modules/Compiler/GNU-CXX.cmake /usr/share/cmake/Modules/Compiler/GNU.cmake /usr/share/cmake/Modules/Platform/Linux-GNU-C.cmake /usr/share/cmake/Modules/Platform/Linux-GNU-CXX.cmake /usr/share/cmake/Modules/Platform/Linux-GNU.cmake /usr/share/cmake/Modules/Platform/Linux-Initialize.cmake /usr/share/cmake/Modules/Platform/Linux.cmake /usr/share/cmake/Modules/Platform/UnixPaths.cmake CMakeCache.txt CMakeFiles/3.30.2/CMakeCCompiler.cmake CMakeFiles/3.30.2/CMakeCXXCompiler.cmake CMakeFiles/3.30.2/CMakeSystem.cmake: phony
 
 
 #############################################
