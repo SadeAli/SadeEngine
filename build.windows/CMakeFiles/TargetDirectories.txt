@@ -1,5 +1,0 @@
-/home/ali/mnt/project/code/everything/gameTests/leaf/myLeaf/build.windows/CMakeFiles/edit_cache.dir
-/home/ali/mnt/project/code/everything/gameTests/leaf/myLeaf/build.windows/CMakeFiles/rebuild_cache.dir
-/home/ali/mnt/project/code/everything/gameTests/leaf/myLeaf/build.windows/sade/CMakeFiles/myLeaf.dir
-/home/ali/mnt/project/code/everything/gameTests/leaf/myLeaf/build.windows/sade/CMakeFiles/edit_cache.dir
-/home/ali/mnt/project/code/everything/gameTests/leaf/myLeaf/build.windows/sade/CMakeFiles/rebuild_cache.dir
