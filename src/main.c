@@ -78,6 +78,9 @@ int main(void)
     glUniformMatrix4fv(uProjection, 1, false, (float*)&projection);
     glUniformMatrix4fv(uModel, 1, false, (float*)&model);
 
+    glUniform1i(glGetUniformLocation(d.shader, "texture1"), 0);
+    glUniform1i(glGetUniformLocation(d.shader, "texture2"), 1);
+
     glClearColor(105 / 255.0, 18 / 255.0, 18 / 255.0, 1);
     while(!window_shouldClose(&window)) {
         // NOTE: handle logic here
