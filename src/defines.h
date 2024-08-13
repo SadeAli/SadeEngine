@@ -20,9 +20,9 @@ typedef double f64;
 
 // Boolean types
 
-typedef _Bool b8;
+typedef bool b8;
 /** @brief 32-bit boolean type, might be used for APIs which require it */
-typedef int b32;
+typedef i32 b32;
 
 
 /** @brief A range, typically of memory */

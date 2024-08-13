@@ -44,3 +44,4 @@ bool window_shouldClose(Window *window);
 void window_swapBuffers(Window *window);
 double window_getFrameTime(Window *window);
 void window_pollEvents();
+void window_terminate(Window *window);

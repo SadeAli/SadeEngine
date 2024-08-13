@@ -12,6 +12,7 @@ RelativePosition2D init_rp2d(vec2 relativePos)
 
 bool rp2d_addChild(rp2d *parent, rp2d child)
 {
+    // TODO: replace this macro with proper function
     if (APPEND_ARRAY_LIST(parent->children, child) == false)
     {
         return false;

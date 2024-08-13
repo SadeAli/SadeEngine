@@ -2,7 +2,7 @@
 #include "relativePosition.h"
 #include "arrayDynamics.h"
 
-RelativePosition3D init_rp3d(vec3 relativePos)
+RelativePosition3D init_rp3d(Vec3 relativePos)
 {
     return (rp3d){
         .relativePosition = relativePos,
@@ -36,13 +36,13 @@ void rp3d_recalculate(rp3d *rp)
     }
 }
 
-void rp3d_setRelativePosition(RelativePosition3D *rp, const vec3 pos) {
-    const vec3 delta = vec3Sub(pos, rp->relativePosition);
+void rp3d_setRelativePosition(RelativePosition3D *rp, const Vec3 pos) {
+    const Vec3 delta = vec3Sub(pos, rp->relativePosition);
     rp->globalPosition = vec3Add(rp->globalPosition, delta);
     rp3d_recalculate(rp);
 }
 
-void rp3d_setGlobalPosition(RelativePosition3D *rp, const vec3 pos)
+void rp3d_setGlobalPosition(RelativePosition3D *rp, const Vec3 pos)
 {
     rp->globalPosition = pos;
 
@@ -57,7 +57,7 @@ void rp3d_setGlobalPosition(RelativePosition3D *rp, const vec3 pos)
 }
 
 // not sure if complete
-void rp3d_IncreasePosition(RelativePosition3D *rp, vec3 delta)
+void rp3d_IncreasePosition(RelativePosition3D *rp, Vec3 delta)
 {
     rp->relativePosition = vec3Add(rp->relativePosition, delta);
 

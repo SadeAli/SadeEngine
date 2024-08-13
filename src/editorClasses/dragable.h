@@ -2,7 +2,7 @@
 
 #include <raylib.h>
 #include "relativePosition.h"
-#include "vec.h"
+// #include "vec.h"
 
 typedef struct Dragable2D_t
 {

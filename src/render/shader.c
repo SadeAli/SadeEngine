@@ -1,16 +1,8 @@
 #include "shader.h"
 #include "glad/glad.h"
 #include <stdio.h>
+#include "io/file.h"
 
-// TODO: seperate file io header
-typedef struct FileBuffer_t {
-    char *data;
-    size_t size;
-} FileBuffer;
-
-FileBuffer init_FileBuffer(FILE *path);
-
-// TODO: seperate temporary definitions (headers etc)
 OpenglShaderProgram init_openglShaderProgram(ShaderFile sList[static 1], int shaderCount) {
     // create shader
     OpenglShaderProgram shaderProgram = glCreateProgram();
@@ -72,6 +64,8 @@ OpenglShader init_openglShader(const char *shaderPath, enum ShaderType shaderTyp
     glShaderSource(shader, 1, (const char **)&sourceFB.data, &lenght);
     glCompileShader(shader);
 
+    free_FileBuffer(sourceFB);
+
     // compile shader
     // WARN: static variable is bad here
     // TODO: make static infolog dynamic or parametric
@@ -90,40 +84,3 @@ OpenglShader init_openglShader(const char *shaderPath, enum ShaderType shaderTyp
     return shader;
 }
 
-
-// TODO: seperate file io source
-#include <stdio.h>
-#include <stdlib.h>
-
-FileBuffer init_FileBuffer(FILE *file) {
-    FileBuffer fb = {0};
-
-    // get file size
-    // WARN: I am not checking errors for these 2 lines
-    fseek(file, 0, SEEK_END);
-    size_t filesize = ftell(file);
-
-    // allocate memory for buffer
-    char *buffer = malloc(sizeof(char) * (filesize + 1));
-    if (!buffer) {
-        perror("malloc");
-        return fb;
-    }
-
-    // read file from beginning to end
-    rewind(file);
-    fread(buffer, sizeof(char), filesize, file);
-    if (ferror(file)) {
-        perror("fread");
-        free(buffer);
-        return fb;
-    }
-    buffer[filesize] = '\0';
-
-    // if everything successful set file buffer and return it
-    // NOTE: we initialize fb to zero at the start in case something goes wrong
-    fb.data = buffer;
-    fb.size = filesize + 1;
-
-    return fb;
-}

@@ -28,10 +28,7 @@ Window init_window(const WindowSettings ws[static 1])
     // glfwSetWindowAttrib(glfwWindow, GLFW_RESIZABLE, 1);
     glfwMakeContextCurrent(glfwWindow);
 
-    // TODO: change glfw swap interval (1) with an optional version
-    //
-    // enable frame cap
-    glfwSwapInterval(1);
+    // TODO: make better pfs implementation
 
     // load opengl functions
     int version = gladLoadGL();
@@ -90,4 +87,9 @@ void window_swapBuffers(Window *window) {
 
 double window_getFrameTime(Window *window) {
     return window->frameTime;
+}
+
+void window_terminate(Window *window) {
+    glfwDestroyWindow(window->glfwWindow);
+    glfwTerminate();
 }

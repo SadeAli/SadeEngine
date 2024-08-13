@@ -23,8 +23,8 @@ typedef struct RelativePosition2D_t
 // rp3d definition
 typedef struct RelativePosition3D_t
 {
-    vec3 globalPosition;
-    vec3 relativePosition;
+    Vec3 globalPosition;
+    Vec3 relativePosition;
 
     struct
     {
@@ -49,9 +49,9 @@ void rp2d_setRelativePosition(RelativePosition2D *rp, const vec2 pos);
 vec2 rp2d_globalPosition(const RelativePosition2D *rp);
 
 // rp3d funcitons
-RelativePosition3D init_rp3d(vec3 relativePos);
+RelativePosition3D init_rp3d(Vec3 relativePos);
 bool rp3d_addChild(rp3d *parent, rp3d child);
 void rp3d_recalculate(rp3d *rp);
-void rp3d_setGlobalPosition(RelativePosition3D *rp, const vec3 pos);
-void rp3d_IncreasePosition(RelativePosition3D *rp, vec3 delta);
-void rp3d_setRelativePosition(RelativePosition3D *rp, const vec3 pos);
+void rp3d_setGlobalPosition(RelativePosition3D *rp, const Vec3 pos);
+void rp3d_IncreasePosition(RelativePosition3D *rp, Vec3 delta);
+void rp3d_setRelativePosition(RelativePosition3D *rp, const Vec3 pos);

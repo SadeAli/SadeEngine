@@ -24,19 +24,14 @@ bool appendArrayDynamic(void **array, const u32 unitSize, u32 *size, u32 *capaci
     }
 
     // append
-    memcpy((*array + (unitSize * localSize++)), appendData, unitSize);
+    memcpy((*array + (unitSize * localSize)), appendData, unitSize);
+    localSize += 1;
 
     // write results
     *capacity = localCapacity;
     *size = localSize;
 
     return true;
-}
-
-void arrayPop(void *array, u32 unitSize, u32 *size, void *result)
-{
-    (*size) -= 1;
-    memcpy(result, array + (unitSize * (*size)), unitSize);
 }
 
 bool arrayScale(void **array, u64 newSize)
