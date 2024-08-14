@@ -4,7 +4,7 @@
 #include <GLFW/glfw3.h>
 
 #include "window.h"
-#include "glad/glad.h"
+#include <glad/glad.h>
 #include "render/shader.h"
 #include "render/drawable.h"
 
@@ -12,15 +12,19 @@
 
 #include <math.h>
 
-#include "cglm/mat4.h"
-#include "cglm/types.h"
-#include "cglm/affine.h"
-#include "cglm/affine-pre.h"
-#include "cglm/cam.h"
-#include "cglm/clipspace/persp_lh_no.h"
-#include "cglm/util.h"
+#include <cglm/mat4.h>
+#include <cglm/types.h>
+#include <cglm/affine.h>
+#include <cglm/affine-pre.h>
+#include <cglm/cam.h>
+#include <cglm/clipspace/persp_lh_no.h>
+#include <cglm/util.h>
 
-#include "stb/stb_image.h"
+#include <stb/stb_image.h>
+
+#define CIMGUI_DEFINE_ENUMS_AND_STRUCTS
+#include <cimgui/cimgui.h>
+#include <imgui_impl_glfw.h>
 
 struct Engine
 {
@@ -68,7 +72,7 @@ int main(void)
     glm_translate(view, (vec3){0.0f, 0.0f, -2.0f}); 
     glm_perspective(55, 16.0f/9.0f, 0.1f, 100.0f, projection);
 
-        // move data to shader
+    // move data to shader
     glUseProgram(d.shader);
     int uProjection = glGetUniformLocation(d.shader, "uProjection");
     int uView = glGetUniformLocation(d.shader, "uView");
@@ -80,6 +84,14 @@ int main(void)
 
     glUniform1i(glGetUniformLocation(d.shader, "texture1"), 0);
     glUniform1i(glGetUniformLocation(d.shader, "texture2"), 1);
+
+    ImGui_ImplGlfw_InitForOpenGL(window.glfwWindow, true);
+
+    bool open = 1;
+    ImGuiWindowFlags flags = ImGuiWindowFlags_None;
+    igBegin("my first imgui", &open, flags);
+
+    igEnd();
 
     glClearColor(105 / 255.0, 18 / 255.0, 18 / 255.0, 1);
     while(!window_shouldClose(&window)) {
