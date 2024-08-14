@@ -23,7 +23,8 @@ target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wunused -g -O0)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE glfw raylib m cglm)
 
-add_subdirectory(external/cglm/)
+add_subdirectory(external/cglm)
+add_subdirectory(external/glfw)
 
 # Add resources
 add_custom_command(
