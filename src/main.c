@@ -22,10 +22,6 @@
 
 #include <stb/stb_image.h>
 
-#define CIMGUI_DEFINE_ENUMS_AND_STRUCTS
-#include <cimgui/cimgui.h>
-#include <imgui_impl_glfw.h>
-
 struct Engine
 {
     WindowSettings windowSettings;
@@ -84,14 +80,6 @@ int main(void)
 
     glUniform1i(glGetUniformLocation(d.shader, "texture1"), 0);
     glUniform1i(glGetUniformLocation(d.shader, "texture2"), 1);
-
-    ImGui_ImplGlfw_InitForOpenGL(window.glfwWindow, true);
-
-    bool open = 1;
-    ImGuiWindowFlags flags = ImGuiWindowFlags_None;
-    igBegin("my first imgui", &open, flags);
-
-    igEnd();
 
     glClearColor(105 / 255.0, 18 / 255.0, 18 / 255.0, 1);
     while(!window_shouldClose(&window)) {

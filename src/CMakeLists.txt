@@ -2,6 +2,7 @@
 include_directories(${PROJECT_SOURCE_DIR}/src)
 include_directories(${PROJECT_SOURCE_DIR}/src/memory)
 include_directories(${PROJECT_SOURCE_DIR}/src/external)
+include_directories(${PROJECT_SOURCE_DIR}/src/external/gladFiles)
 # include_directories(${PROJECT_SOURCE_DIR}/src/math)
 
 # Source files
