@@ -4,7 +4,6 @@
 #include <GLFW/glfw3.h>
 
 #include "window.h"
-#include <glad/glad.h>
 #include "render/shader.h"
 #include "render/drawable.h"
 
@@ -21,6 +20,15 @@
 #include <cglm/util.h>
 
 #include <stb/stb_image.h>
+
+#define CIMGUI_DEFINE_ENUMS_AND_STRUCTS
+#include <cimgui.h>
+
+#define CIMGUI_USE_GLFW
+#define CIMGUI_USE_OPENGL3
+#include <cimgui_impl.h>
+
+#include <glad/glad.h>
 
 struct Engine
 {
@@ -44,7 +52,7 @@ int main(void)
         {"resources/shaders/texture_projection.fs", SHADER_TYPE_FRAGMENT},
         {"resources/shaders/texture_projection.vs", SHADER_TYPE_VERTEX},
     };
-
+    
     glEnable(GL_DEPTH_TEST);
 
     // WARN: only allows for rendering with indices
@@ -82,11 +90,19 @@ int main(void)
     glUniform1i(glGetUniformLocation(d.shader, "texture2"), 1);
 
     glClearColor(105 / 255.0, 18 / 255.0, 18 / 255.0, 1);
+
+    ImGuiIO *ioptr = igGetIO();
+    ioptr->ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;   // Enable Keyboard Controls
+
+    bool demo = 1;
     while(!window_shouldClose(&window)) {
         // NOTE: handle logic here
 
-        // render start
+        glViewport(0, 0, (int)ioptr->DisplaySize.x, (int)ioptr->DisplaySize.y);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClearColor(105 / 255.0, 18 / 255.0, 18 / 255.0, 1);
+
+        // render start
 
         glm_rotate(model, glm_rad(-1), (float[]){0.17,0.13,0.11});
 
@@ -104,6 +120,18 @@ int main(void)
         glad_glBindVertexArray(cube);
         glDrawArrays(GL_TRIANGLES, 0, 36);
         glm_translate(model, (vec3){-1.2f, -sin(glfwGetTime()), 0.0f}); 
+        //
+        // start imgui frame
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+
+        igNewFrame();
+
+        igShowDemoWindow(&demo);
+
+        // render
+        igRender();
+        ImGui_ImplOpenGL3_RenderDrawData(igGetDrawData());
 
         // render end
         window_swapBuffers(&window);

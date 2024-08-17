@@ -1,10 +1,19 @@
-#include "glad/glad.h"
-#include "window.h"
-#include "GLFW/glfw3.h"
 #include <assert.h>
 #include <stdio.h>
 #include <threads.h>
 #include <time.h>
+
+#include <glad/glad.h>
+
+#define CIMGUI_DEFINE_ENUMS_AND_STRUCTS
+#include <cimgui.h>
+
+#define CIMGUI_USE_GLFW
+#define CIMGUI_USE_OPENGL3
+#include <cimgui_impl.h>
+
+#include "window.h"
+#include "GLFW/glfw3.h"
 
 static bool glfwStarted = 0;
 
@@ -25,15 +34,26 @@ Window init_window(const WindowSettings ws[static 1])
     glfwWindow = glfwCreateWindow(ws->width , ws->height, ws->title, nullptr, nullptr);
     assert(glfwWindow != nullptr);
 
-    // glfwSetWindowAttrib(glfwWindow, GLFW_RESIZABLE, 1);
+    glfwSetWindowAttrib(glfwWindow, GLFW_RESIZABLE, 1);
     glfwMakeContextCurrent(glfwWindow);
 
+    glfwSetWindowSizeLimits(glfwWindow, 16, 10, 2560, 1600);
+
     // TODO: make better pfs implementation
+    glfwSwapInterval(1);
+    
 
     // load opengl functions
     int version = gladLoadGL();
     assert (version != 0);
-    glViewport(0, 0, ws->width, ws->height);
+
+    // NOTE: no need to use glViewport since ImGui_ImplGlfw_InitForOpenGL does that for us
+    // glViewport(0, 0, 1920, 1080); 
+    igCreateContext(nullptr);
+    ImGui_ImplGlfw_InitForOpenGL(glfwWindow, true);
+    ImGui_ImplOpenGL3_Init("#version 460 core");
+
+    igStyleColorsDark(NULL);
 
     // glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
     return (Window) {
@@ -44,7 +64,7 @@ Window init_window(const WindowSettings ws[static 1])
 
 Window init_windowDefault() {
     WindowSettings ws = {
-        .title = "myLeaf",
+        .title = "sadeEngine",
         .width = 1920,
         .height = 1080,
         .fps = 60

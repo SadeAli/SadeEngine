@@ -1,3 +1,5 @@
+include(${PROJECT_SOURCE_DIR}/cmake/cimgui.cmake)
+
 # Include directories
 include_directories(${PROJECT_SOURCE_DIR}/src)
 include_directories(${PROJECT_SOURCE_DIR}/src/memory)
@@ -22,7 +24,7 @@ add_subdirectory(utils)
 
 target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wunused -g -O0)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE glfw raylib m cglm)
+target_link_libraries(${PROJECT_NAME} PRIVATE glfw raylib m cglm cimgui)
 
 add_subdirectory(external/cglm)
 add_subdirectory(external/glfw)
