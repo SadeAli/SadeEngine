@@ -46,16 +46,29 @@ struct Engine
 
 int main(void)
 {
+    // NOTE:
+    // window init
     Window window = init_windowDefault();
 
     ShaderFile sList[] = {
         {"resources/shaders/texture_projection.fs", SHADER_TYPE_FRAGMENT},
         {"resources/shaders/texture_projection.vs", SHADER_TYPE_VERTEX},
     };
-    
-    glEnable(GL_DEPTH_TEST);
+ 
+    ImGuiIO *ioptr = igGetIO();
+    ioptr->ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;   // Enable Keyboard Controls   
 
-    // WARN: only allows for rendering with indices
+    // NOTE:
+    // init
+    glEnable(GL_DEPTH_TEST);
+    glClearColor(105 / 255.0, 18 / 255.0, 18 / 255.0, 1);
+
+
+    // NOTE:
+    // init objects here
+
+    // WARN:
+    // only allows for rendering with indices
     Drawable d = {
         .vao = init_rect_vao(),
         .elementCount = 6,
@@ -89,24 +102,23 @@ int main(void)
     glUniform1i(glGetUniformLocation(d.shader, "texture1"), 0);
     glUniform1i(glGetUniformLocation(d.shader, "texture2"), 1);
 
-    glClearColor(105 / 255.0, 18 / 255.0, 18 / 255.0, 1);
-
-    ImGuiIO *ioptr = igGetIO();
-    ioptr->ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;   // Enable Keyboard Controls
-
     bool demo = 1;
     while(!window_shouldClose(&window)) {
-        // NOTE: handle logic here
+        // NOTE:
+        // handle logic here
 
+        glm_rotate(model, glm_rad(-1), (float[]){0.17,0.13,0.11});
+
+        
+        // NOTE:
+        // render settings
         glViewport(0, 0, (int)ioptr->DisplaySize.x, (int)ioptr->DisplaySize.y);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glClearColor(105 / 255.0, 18 / 255.0, 18 / 255.0, 1);
 
-        // render start
-
-        glm_rotate(model, glm_rad(-1), (float[]){0.17,0.13,0.11});
-
-        // NOTE: render here
+        // NOTE:
+        // render objects here
+        
         // drawable_draw(d);
         glUseProgram(d.shader);
         glUniformMatrix4fv(uModel, 1, false, (float*)&model);
@@ -120,8 +132,10 @@ int main(void)
         glad_glBindVertexArray(cube);
         glDrawArrays(GL_TRIANGLES, 0, 36);
         glm_translate(model, (vec3){-1.2f, -sin(glfwGetTime()), 0.0f}); 
-        //
-        // start imgui frame
+       
+
+        // NOTE: 
+        // render gui here
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
 
@@ -129,20 +143,23 @@ int main(void)
 
         igShowDemoWindow(&demo);
 
-        // render
         igRender();
         ImGui_ImplOpenGL3_RenderDrawData(igGetDrawData());
 
-        // render end
+
+        // NOTE:
+        // post render
         window_swapBuffers(&window);
         window_pollEvents();
     }
 
+    // NOTE: clean resources
     glDeleteVertexArrays(1, &d.vao);
     glDeleteProgram(d.shader);
 
-    // TODO: maybe change name
-    window_terminate(&window);
+    // NOTE:
+    // terminate initialized systems
+    window_close(&window);
 
     return 0;
 }

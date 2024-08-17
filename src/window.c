@@ -41,15 +41,17 @@ Window init_window(const WindowSettings ws[static 1])
 
     // TODO: make better pfs implementation
     glfwSwapInterval(1);
+
     
 
     // load opengl functions
-    int version = gladLoadGL();
+    int version = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);;
     assert (version != 0);
 
     // NOTE: no need to use glViewport since ImGui_ImplGlfw_InitForOpenGL does that for us
     // glViewport(0, 0, 1920, 1080); 
-    igCreateContext(nullptr);
+
+    ImGuiContext *igContext = igCreateContext(nullptr);
     ImGui_ImplGlfw_InitForOpenGL(glfwWindow, true);
     ImGui_ImplOpenGL3_Init("#version 460 core");
 
@@ -59,6 +61,7 @@ Window init_window(const WindowSettings ws[static 1])
     return (Window) {
         .glfwWindow = glfwWindow,
         .settings = *ws,
+        .igContext = igContext,
     };
 }
 
@@ -109,7 +112,11 @@ double window_getFrameTime(Window *window) {
     return window->frameTime;
 }
 
-void window_terminate(Window *window) {
+void window_close(Window *window) {
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    igDestroyContext(window->igContext);
+
     glfwDestroyWindow(window->glfwWindow);
     glfwTerminate();
 }

@@ -1,6 +1,8 @@
 #pragma once
 
 #include <GLFW/glfw3.h>
+#define CIMGUI_DEFINE_ENUMS_AND_STRUCTS
+#include <cimgui.h>
 
 typedef struct WindowSettings
 {
@@ -26,13 +28,15 @@ typedef struct Window_t {
 
     WindowSettings settings;
 
+    ImGuiContext *igContext;
+
 } Window;
 
 /**
  * @brief an initializer for window calls init window with default window settings
  */
 #define INIT_WINDOW(...)                                                                                               \
-    initWindow(&(WindowSettings){.width = 1920, .height = 1080, .fps = 60, .title = "myLeaf", __VA_ARGS__})
+    init_window(&(WindowSettings){.width = 1920, .height = 1080, .fps = 60, .title = "myLeaf", __VA_ARGS__})
 
 // window settings related
 WindowSettings init_windowSettingsDefault();
@@ -44,4 +48,4 @@ bool window_shouldClose(Window *window);
 void window_swapBuffers(Window *window);
 double window_getFrameTime(Window *window);
 void window_pollEvents();
-void window_terminate(Window *window);
+void window_close(Window *window);
