@@ -11,6 +11,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 # Add subdirectories for source files
 add_subdirectory(src)
 set_property(TARGET ${PROJECT_NAME} PROPERTY C_STANDARD 23)
+set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 17)
 
 target_compile_options(${PROJECT_NAME} PRIVATE -g)
 

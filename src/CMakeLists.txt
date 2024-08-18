@@ -22,12 +22,16 @@ add_subdirectory(render)
 add_subdirectory(io)
 add_subdirectory(utils)
 
-target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wunused -g -O0)
+target_compile_options(${PROJECT_NAME} PRIVATE -g -O0)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE glfw raylib m cglm cimgui)
+target_link_libraries(${PROJECT_NAME} PRIVATE glfw raylib m cglm cimgui assimp)
 
 add_subdirectory(external/cglm)
 add_subdirectory(external/glfw)
+add_subdirectory(external/assimp)
+
+# Disable treating warnings as errors for Assimp
+target_compile_options(assimp PRIVATE -Wno-error)
 
 # Add resources
 add_custom_command(

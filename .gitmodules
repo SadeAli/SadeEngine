@@ -10,3 +10,9 @@
 [submodule "src/external/cimgui"]
 	path = src/external/cimgui
 	url = https://github.com/cimgui/cimgui.git
+[submodule "src/external/assimp"]
+	path = src/external/assimp
+	url = https://github.com/assimp/assimp.git
+[submodule "resources/models/assimp-mdb"]
+	path = resources/models/assimp-mdb
+	url = https://github.com/assimp/assimp-mdb.git
