@@ -21,6 +21,7 @@ add_subdirectory(external)
 add_subdirectory(render)
 add_subdirectory(io)
 add_subdirectory(utils)
+add_subdirectory(camera)
 
 target_compile_options(${PROJECT_NAME} PRIVATE -g -O0)
 
