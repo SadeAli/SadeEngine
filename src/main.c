@@ -19,6 +19,8 @@
 
 // image loader
 #include <stb/stb_image.h>
+#define STB_PERLIN_IMPLEMENTATION
+#include <stb/stb_perlin.h>
 
 // opengl loader
 #include <glad/glad.h>
@@ -44,6 +46,10 @@
 #include "defines.h"
 #include "camera/camera3d.h"
 
+typedef struct sVec3_t {
+    float x, y, z;
+} sVec3;
+
 struct Engine
 {
     WindowSettings windowSettings;
@@ -56,6 +62,71 @@ struct Engine
             .title = "myLeaf",
         },
 };
+
+
+void drawGrid(OpenglShader s) {
+    int radius = 5;
+    float cellSize = 0.5;
+
+    const u32 linesCount = 2 * (2 * radius + 1);
+    const u32 verticesPerLine = 2;
+    const u32 bufferSize = sizeof(sVec3) * verticesPerLine * linesCount;
+
+    sVec3 *vertices = malloc(bufferSize);
+    if (vertices == NULL) {
+        perror("malloc");
+        return;
+    }
+
+    u32 placed = 0;
+
+    // Horizontal lines
+    for (int z = -radius; z <= radius; z++) {
+        vertices[placed++] = (sVec3){-radius * cellSize, 0, z * cellSize};
+        vertices[placed++] = (sVec3){radius * cellSize, 0, z * cellSize};
+    }
+
+    // Vertical lines
+    for (int x = -radius; x <= radius; x++) {
+        vertices[placed++] = (sVec3){x * cellSize, 0, -radius * cellSize};
+        vertices[placed++] = (sVec3){x * cellSize, 0, radius * cellSize};
+    }
+
+    u32 vao, vbo;
+
+    // Generate and bind VAO and VBO
+    glGenVertexArrays(1, &vao);
+    glGenBuffers(1, &vbo);
+
+    glBindVertexArray(vao);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
+    // Copy vertex data to buffer
+    glBufferData(GL_ARRAY_BUFFER, bufferSize, vertices, GL_STREAM_DRAW);
+
+    // Set vertex attribute pointers
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(sVec3), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    // Use shader program
+    glUseProgram(s);
+
+    // Draw the grid
+    glDrawArrays(GL_LINES, 0, placed);
+
+    // Error checking
+    GLenum err;
+    while ((err = glGetError()) != GL_NO_ERROR) {
+        printf("OpenGL error: %d\n", err);
+    }
+
+    // Cleanup
+    glBindVertexArray(0);
+    glDeleteVertexArrays(1, &vao);
+    glDeleteBuffers(1, &vbo);
+
+    free(vertices);
+}
 
 // TODO: import and process 3D models
 static bool import_example() {
@@ -87,6 +158,12 @@ int main(void)
         {"resources/shaders/texture_projection.fs", SHADER_TYPE_FRAGMENT},
         {"resources/shaders/texture_projection.vs", SHADER_TYPE_VERTEX},
     };
+
+    ShaderFile s2List[] = {
+        {"resources/shaders/hello.fs", SHADER_TYPE_FRAGMENT},
+        {"resources/shaders/projection.vs", SHADER_TYPE_VERTEX},
+        //{"resources/shaders/projection.vs", SHADER_TYPE_VERTEX},
+    };
  
     ImGuiIO *ioptr = igGetIO();
     ioptr->ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;   // Enable Keyboard Controls   
@@ -94,7 +171,7 @@ int main(void)
     // gl settings
     glEnable(GL_DEPTH_TEST);
     glClearColor(105 / 255.0, 18 / 255.0, 18 / 255.0, 1);
-    glLineWidth(10);
+    glLineWidth(5);
 
     // NOTE:
     // init objects here
@@ -106,6 +183,8 @@ int main(void)
         .shader = init_openglShaderProgram(sList, 2),
     };
 
+    OpenglShader helloShader = init_openglShaderProgram(s2List, 2);
+
     u32 cube = init_cube_vao_textured();
 
     assert(cube);
@@ -116,7 +195,6 @@ int main(void)
     mat4 model = GLM_MAT4_IDENTITY_INIT;
     mat4 view = GLM_MAT4_IDENTITY_INIT;
     mat4 projection = GLM_MAT4_IDENTITY_INIT;
-    glm_translate(view, (vec3){0.0f, 0.0f, 0.0f}); 
     glm_perspective(55, 16.0f/9.0f, 0.1f, 100.0f, projection);
 
     // move data to shader
@@ -132,9 +210,19 @@ int main(void)
     glUniform1i(glGetUniformLocation(d.shader, "texture1"), 0);
     glUniform1i(glGetUniformLocation(d.shader, "texture2"), 1);
 
+    // move data to shader
+    glUseProgram(helloShader);
+    int u2Projection = glGetUniformLocation(helloShader, "uProjection");
+    int u2View = glGetUniformLocation(helloShader, "uView");
+    int u2Model = glGetUniformLocation(helloShader, "uModel");
+
+    glUniformMatrix4fv(u2View, 1, false, (float*)&view);
+    glUniformMatrix4fv(u2Projection, 1, false, (float*)&projection);
+    glUniformMatrix4fv(u2Model, 1, false, (float*)&model);
+
     // initialize camera
     Camera3D camera = {
-        .position = {0, 0, 0},
+        .position = {0, -5, 0},
         .target = {0,0,0},
         .up = {0,1,0},
     };
@@ -146,12 +234,16 @@ int main(void)
         // handle logic here
         {
             camera3d_updateOrbital(&camera);
+
+            glUseProgram(d.shader);
             glUniformMatrix4fv(uView, 1, false, (float*)&camera.view);
+
+            glUseProgram(helloShader);
+            glUniformMatrix4fv(u2View, 1, false, (float*)&camera.view);
         }
 
         // render settings
         {
-            glViewport(0, 0, (int)ioptr->DisplaySize.x, (int)ioptr->DisplaySize.y);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             glClearColor(105 / 255.0, 18 / 255.0, 18 / 255.0, 1);
         }
@@ -159,19 +251,21 @@ int main(void)
         // render objects here
         {
             glUseProgram(d.shader);
-            glUniformMatrix4fv(uModel, 1, false, (float*)&model);
             glad_glBindVertexArray(cube);
-            // glDrawArrays(GL_TRIANGLES, 0, 36);
+            glDrawArrays(GL_TRIANGLES, 0, 36);
 
             // // draw again with slight offset
-            // glm_translate(model, (vec3){1.2f, sin(glfwGetTime()), 0.0f});
-            // glUseProgram(d.shader);
-            // glUniformMatrix4fv(uModel, 1, false, (float*)&model);
+            glm_translate(model, (vec3){1.2f, sin(glfwGetTime()), 0.0f});
+            glUseProgram(d.shader);
+            glUniformMatrix4fv(uModel, 1, false, (float*)&model);
             // glad_glBindVertexArray(cube);
             // glDrawArrays(GL_TRIANGLES, 0, 36);
-            // glm_translate(model, (vec3){-1.2f, -sin(glfwGetTime()), 0.0f});
-
             glDrawArrays(GL_LINE_STRIP, 0, 36);
+            glm_translate(model, (vec3){-1.2f, -sin(glfwGetTime()), 0.0f});
+            glUniformMatrix4fv(uModel, 1, false, (float*)&model);
+
+            // drawGrid(helloShader);
+            drawGrid(d.shader);
         }
 
         // render gui here

@@ -17,6 +17,10 @@
 
 static bool glfwStarted = 0;
 
+void window_resizeCallback(GLFWwindow* window, int width, int height) {
+    glViewport(0, 0, width, height);
+}
+
 Window init_window(const WindowSettings ws[static 1])
 {
     // only 1 window is permitted
@@ -42,8 +46,6 @@ Window init_window(const WindowSettings ws[static 1])
     // TODO: make better pfs implementation
     glfwSwapInterval(1);
 
-    
-
     // load opengl functions
     int version = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);;
     assert (version != 0);
@@ -56,6 +58,8 @@ Window init_window(const WindowSettings ws[static 1])
     ImGui_ImplOpenGL3_Init("#version 460 core");
 
     igStyleColorsDark(NULL);
+
+    glfwSetWindowSizeCallback(glfwWindow, window_resizeCallback);
 
     // glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
     return (Window) {
