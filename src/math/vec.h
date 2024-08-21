@@ -2,11 +2,7 @@
 
 #include "defines.h"
 
-#ifdef RAYLIB_H
-#include <raylib.h>
-#endif
-
-typedef union vec2_t
+typedef union Vec2_t
 {
     struct
     {
@@ -23,10 +19,7 @@ typedef union vec2_t
 
     f32 data[2];
 
-#ifdef RAYLIB_H
-    Vector2 raylibV;
-#endif
-} vec2;
+} Vec2;
 
 typedef union vec3_t
 {
@@ -53,12 +46,9 @@ typedef union vec3_t
 
     f32 data[3];
 
-#ifdef RAYLIB_H
-    Vector3 raylibV;
-#endif
 } Vec3;
 
-typedef union vec4_t
+typedef union Vec4_t
 {
     struct
     {
@@ -88,20 +78,20 @@ typedef union vec4_t
     };
 
     f32 data[4];
-} vec4;
+} Vec4;
 
-// ===================================== vec2 ===============================================
-S_INLINE vec2 init_vec2(f32 x, f32 y)
+// ===================================== Vec2 ===============================================
+S_INLINE Vec2 init_Vec2(f32 x, f32 y)
 {
-    return (vec2){
+    return (Vec2){
         .x = x,
         .y = y,
     };
 }
 
-S_INLINE vec2 vec2Sub(vec2 a, vec2 b)
+S_INLINE Vec2 vec2Sub(Vec2 a, Vec2 b)
 {
-    const vec2 result = {
+    const Vec2 result = {
         .x = a.x - b.x,
         .y = a.y - b.y,
     };
@@ -109,9 +99,9 @@ S_INLINE vec2 vec2Sub(vec2 a, vec2 b)
     return result;
 }
 
-S_INLINE vec2 vec2Add(vec2 a, vec2 b)
+S_INLINE Vec2 vec2Add(Vec2 a, Vec2 b)
 {
-    const vec2 result = {
+    const Vec2 result = {
         .x = a.x + b.x,
         .y = a.y + b.y,
     };
@@ -120,7 +110,7 @@ S_INLINE vec2 vec2Add(vec2 a, vec2 b)
 }
 
 // ===================================== vec3 ===============================================
-S_INLINE Vec3 init_vec3(f32 x, f32 y, f32 z)
+S_INLINE Vec3 init_Vec3(f32 x, f32 y, f32 z)
 {
     return (Vec3){
         .x = x,

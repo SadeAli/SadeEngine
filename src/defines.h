@@ -2,6 +2,8 @@
 
 // type definitions -> ((type alias)(bitSize))
 
+#include <stdbool.h>
+
 // unsigned integer types.
 typedef unsigned char u8;
 typedef unsigned short u16;

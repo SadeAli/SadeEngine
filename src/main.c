@@ -1,3 +1,4 @@
+#include "cglm/vec2.h"
 #define GLFW_INCLUDE_NONE
 
 #include <assert.h>
@@ -45,10 +46,8 @@
 #include "render/drawable.h"
 #include "defines.h"
 #include "camera/camera3d.h"
-
-typedef struct sVec3_t {
-    float x, y, z;
-} sVec3;
+#include "shapes/grid.h"
+#include "math/vec.h"
 
 struct Engine
 {
@@ -63,70 +62,7 @@ struct Engine
         },
 };
 
-
-void drawGrid(OpenglShader s) {
-    int radius = 5;
-    float cellSize = 0.5;
-
-    const u32 linesCount = 2 * (2 * radius + 1);
-    const u32 verticesPerLine = 2;
-    const u32 bufferSize = sizeof(sVec3) * verticesPerLine * linesCount;
-
-    sVec3 *vertices = malloc(bufferSize);
-    if (vertices == NULL) {
-        perror("malloc");
-        return;
-    }
-
-    u32 placed = 0;
-
-    // Horizontal lines
-    for (int z = -radius; z <= radius; z++) {
-        vertices[placed++] = (sVec3){-radius * cellSize, 0, z * cellSize};
-        vertices[placed++] = (sVec3){radius * cellSize, 0, z * cellSize};
-    }
-
-    // Vertical lines
-    for (int x = -radius; x <= radius; x++) {
-        vertices[placed++] = (sVec3){x * cellSize, 0, -radius * cellSize};
-        vertices[placed++] = (sVec3){x * cellSize, 0, radius * cellSize};
-    }
-
-    u32 vao, vbo;
-
-    // Generate and bind VAO and VBO
-    glGenVertexArrays(1, &vao);
-    glGenBuffers(1, &vbo);
-
-    glBindVertexArray(vao);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-
-    // Copy vertex data to buffer
-    glBufferData(GL_ARRAY_BUFFER, bufferSize, vertices, GL_STREAM_DRAW);
-
-    // Set vertex attribute pointers
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(sVec3), (void*)0);
-    glEnableVertexAttribArray(0);
-
-    // Use shader program
-    glUseProgram(s);
-
-    // Draw the grid
-    glDrawArrays(GL_LINES, 0, placed);
-
-    // Error checking
-    GLenum err;
-    while ((err = glGetError()) != GL_NO_ERROR) {
-        printf("OpenGL error: %d\n", err);
-    }
-
-    // Cleanup
-    glBindVertexArray(0);
-    glDeleteVertexArrays(1, &vao);
-    glDeleteBuffers(1, &vbo);
-
-    free(vertices);
-}
+static OpenglShader globalShader = 0;
 
 // TODO: import and process 3D models
 static bool import_example() {
@@ -149,6 +85,143 @@ static bool import_example() {
     return true;
 }
 
+// IDEA: every object has its own hierarchy and objects will only hold indices to child objects
+// TODO: systems
+
+// FIX: townscaper style generation
+bool drawLayeredHexagon() {
+    const int layerCount = 2;
+    const float layerDistance = 1.1;
+
+    const int vertexCount = (layerCount + 1)*layerCount*3 + 1;
+    const int triangleCount = layerCount * layerCount * 6;
+    const int indexCount = triangleCount * 3;
+
+    const u32 vertexBufferSize = sizeof(Vec2) * vertexCount;
+    const u32 indexBufferSize = sizeof(u32) * indexCount;
+    Vec2 *vertices = malloc(vertexBufferSize);
+    int *indices = malloc(indexBufferSize);
+
+    // FIX: proper nullptr handling
+    assert(vertices && indices);
+
+
+    // place vertices
+    //
+    // place first vector
+    vertices[0] = (Vec2){.data = {0,0}};
+    int placedVertices = 1;
+
+    // place the rest
+    for (int i = 0; i < layerCount; i++) {
+        // for each edge of the hexagon
+        for (int j = 0; j < 6; j++) {
+            Vec2 edgeStart;
+            glm_vec2_rotate((vec2){0, layerDistance * i + 1}, GLM_PI * j / 3, edgeStart.data);
+
+            Vec2 target = edgeStart;
+
+            Vec2 step;
+            glm_vec2_rotate(edgeStart.data, GLM_PI * 2 / 3, step.data);
+            glm_vec2_normalize(step.data);
+            glm_vec2_scale(step.data, layerDistance, step.data);
+
+            // travel trough the edge
+            for (int k = 0; k < (i + 1); k++)
+            {
+                vertices[placedVertices] = target;
+                glm_vec2_add(target.data, step.data, target.data);
+                placedVertices += 1;
+            }
+        }
+    }
+
+        // create triangles
+    // -------------------------------------------------------------------------------------------
+    // clockwise
+    int passedVertices = 1;
+    int placedIndices = 0;
+    int up = 1;
+    int down = 0;
+    for (int i = 0; i < layerCount; i++)
+    {
+        int verticesInNextLayer = (i + 1) * 6;
+
+        for (int j = 0; j < 6; j++)
+        {
+            // first triangle
+            indices[placedIndices++] = up++;
+            indices[placedIndices++] = down++;
+            indices[placedIndices++] = up++;
+
+            // generate the rest using strip method
+            for (int k = 0; k < i; k++)
+            {
+                // strip
+                indices[placedIndices] = indices[placedIndices - 1];
+                indices[placedIndices + 1] = indices[placedIndices - 2];
+
+                // new index
+                indices[placedIndices + 2] = down++;
+                placedIndices += 3;
+
+                // strip
+                indices[placedIndices] = indices[placedIndices - 3];
+                indices[placedIndices + 1] = indices[placedIndices - 1];
+
+                // new index
+                indices[placedIndices + 2] = up++;
+                placedIndices += 3;
+            }
+
+            up--;
+            down--;
+        }
+
+        down = passedVertices;
+
+        if (i != 0)
+        {
+            indices[placedIndices - 4] -= i * 6;
+            indices[placedIndices - 2] -= i * 6;
+        }
+        indices[placedIndices - 1] -= (i + 1) * 6;
+
+        passedVertices += verticesInNextLayer;
+    }
+
+    unsigned int vao, vbo, ebo;
+    glGenVertexArrays(1, &vao);
+    glGenBuffers(1, &vbo);
+    glGenBuffers(1, &ebo);
+
+    glBindVertexArray(vao);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+
+    glBufferData(GL_ARRAY_BUFFER, vertexBufferSize, vertices, GL_STREAM_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexBufferSize, indices, GL_STREAM_DRAW);
+
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vec2), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    glUseProgram(globalShader);
+    // glDrawElements(GL_LINE_STRIP, placedIndices, GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, placedIndices, GL_UNSIGNED_INT, 0);
+
+    free(vertices);
+    free(indices);
+
+    glBindVertexArray(0);
+    glDeleteVertexArrays(1, &vao);
+    glDeleteBuffers(1, &vbo);
+    glDeleteBuffers(1, &ebo);
+
+    return true;
+}
+
+
+// NOTE: main
 int main(void)
 {
     // window init
@@ -163,6 +236,11 @@ int main(void)
         {"resources/shaders/hello.fs", SHADER_TYPE_FRAGMENT},
         {"resources/shaders/projection.vs", SHADER_TYPE_VERTEX},
         //{"resources/shaders/projection.vs", SHADER_TYPE_VERTEX},
+    };
+
+    ShaderFile s3List[] = {
+        {"resources/shaders/hello.fs", SHADER_TYPE_FRAGMENT},
+        {"resources/shaders/texture_projection_2dto3d.vs", SHADER_TYPE_VERTEX},
     };
  
     ImGuiIO *ioptr = igGetIO();
@@ -184,6 +262,7 @@ int main(void)
     };
 
     OpenglShader helloShader = init_openglShaderProgram(s2List, 2);
+    globalShader = init_openglShaderProgram(s3List, 2);
 
     u32 cube = init_cube_vao_textured();
 
@@ -220,9 +299,19 @@ int main(void)
     glUniformMatrix4fv(u2Projection, 1, false, (float*)&projection);
     glUniformMatrix4fv(u2Model, 1, false, (float*)&model);
 
+        // move data to shader
+    glUseProgram(globalShader);
+    int u3Projection = glGetUniformLocation(helloShader, "uProjection");
+    int u3View = glGetUniformLocation(helloShader, "uView");
+    int u3Model = glGetUniformLocation(helloShader, "uModel");
+
+    glUniformMatrix4fv(u3View, 1, false, (float*)&view);
+    glUniformMatrix4fv(u3Projection, 1, false, (float*)&projection);
+    glUniformMatrix4fv(u3Model, 1, false, (float*)&model);
+
     // initialize camera
     Camera3D camera = {
-        .position = {0, -5, 0},
+        .position = {0, 5, 0},
         .target = {0,0,0},
         .up = {0,1,0},
     };
@@ -233,13 +322,16 @@ int main(void)
 
         // handle logic here
         {
-            camera3d_updateOrbital(&camera);
+            camera3d_updateOrbital(&camera, 0.3, 3);
 
             glUseProgram(d.shader);
             glUniformMatrix4fv(uView, 1, false, (float*)&camera.view);
 
             glUseProgram(helloShader);
             glUniformMatrix4fv(u2View, 1, false, (float*)&camera.view);
+
+            glUseProgram(globalShader);
+            glUniformMatrix4fv(u3View, 1, false, (float*)&camera.view);
         }
 
         // render settings
@@ -259,13 +351,15 @@ int main(void)
             glUseProgram(d.shader);
             glUniformMatrix4fv(uModel, 1, false, (float*)&model);
             // glad_glBindVertexArray(cube);
-            // glDrawArrays(GL_TRIANGLES, 0, 36);
-            glDrawArrays(GL_LINE_STRIP, 0, 36);
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+            // glDrawArrays(GL_LINE_STRIP, 0, 36);
             glm_translate(model, (vec3){-1.2f, -sin(glfwGetTime()), 0.0f});
             glUniformMatrix4fv(uModel, 1, false, (float*)&model);
 
+            drawLayeredHexagon();
+
             // drawGrid(helloShader);
-            drawGrid(d.shader);
+            drawGrid(helloShader);
         }
 
         // render gui here

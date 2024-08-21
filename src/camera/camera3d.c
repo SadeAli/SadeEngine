@@ -8,7 +8,7 @@
 void camera3d_recalculate(Camera3D *cam) {
     // TODO: make a better calculation
     cam->up[0] = 0;
-    cam->up[1] = 1;
+    cam->up[1] = -1;
     cam->up[2] = 0;
 
     glm_vec3_sub(cam->target, cam->position, cam->direction);
@@ -20,10 +20,9 @@ void camera3d_recalculate(Camera3D *cam) {
 }
 
 // TODO: add function arguments
-void camera3d_updateOrbital(Camera3D *cam) {
-    const float radius = 5.0f;
-    float camX = sin(glfwGetTime()) * radius;
-    float camZ = cos(glfwGetTime()) * radius;
+void camera3d_updateOrbital(Camera3D *cam, float rotSpeed, float radius) {
+    float camX = sin(glfwGetTime() * rotSpeed) * radius;
+    float camZ = cos(glfwGetTime() * rotSpeed) * radius;
 
     cam->position[0] = camX;
     cam->position[2] = camZ;

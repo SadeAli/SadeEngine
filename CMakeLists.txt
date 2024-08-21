@@ -14,9 +14,3 @@ set_property(TARGET ${PROJECT_NAME} PROPERTY C_STANDARD 23)
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 17)
 
 target_compile_options(${PROJECT_NAME} PRIVATE -g)
-
-add_custom_target(
-  FinalMessage ALL
-  ${CMAKE_COMMAND} -E cmake_echo_color --cyan "Compilation is over!"
-  COMMENT "compiler: ${CMAKE_C_COMPILER_ID}")
-add_dependencies(FinalMessage ${PROJECT_NAME})

@@ -22,6 +22,7 @@ add_subdirectory(render)
 add_subdirectory(io)
 add_subdirectory(utils)
 add_subdirectory(camera)
+add_subdirectory(shapes)
 
 target_compile_options(${PROJECT_NAME} PRIVATE -g -O0)
 
