@@ -24,9 +24,17 @@ add_subdirectory(utils)
 add_subdirectory(camera)
 add_subdirectory(shapes)
 
-target_compile_options(${PROJECT_NAME} PRIVATE -g -O0)
+target_compile_options(${PROJECT_NAME} PRIVATE -g -O0 -fsanitize=address)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE glfw raylib m cglm cimgui assimp)
+target_link_libraries(
+  ${PROJECT_NAME}
+  PRIVATE glfw
+          raylib
+          m
+          cglm
+          cimgui
+          assimp
+          -fsanitize=address)
 
 add_subdirectory(external/cglm)
 add_subdirectory(external/glfw)

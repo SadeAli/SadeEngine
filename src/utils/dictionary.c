@@ -7,8 +7,8 @@
 bool dictionary_add(Dictionary *d, KeyValuePair data) {
     u32 localSize = d->size;
     u32 localCapacity = d->capacity;
-    if (appendArrayDynamic((void **)d->keys, sizeof(d->keys[0]), &localSize, &localCapacity, data.key) &&
-        appendArrayDynamic(d->values, sizeof(d->values[0]), &d->size, &d->capacity, data.key))
+    if (appendArrayDynamic((void **)d->keys, &localSize, &localCapacity, data.key, sizeof(d->keys[0]), 1) &&
+        appendArrayDynamic(d->values, &d->size, &d->capacity, data.key, sizeof(d->values[0]), 1))
     {
         // both operations successful
         return true;

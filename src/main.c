@@ -1,4 +1,5 @@
 #include "cglm/vec2.h"
+#include <stdlib.h>
 #define GLFW_INCLUDE_NONE
 
 #include <assert.h>
@@ -85,15 +86,174 @@ static bool import_example() {
     return true;
 }
 
+// TODO: make a verrtex struct which can hold various attributes (attributes will be bynamically added (before making it concreate))
+/*
+typedef struct DynamicVertex_t {
+    VertexPosition position;
+    u32 attributeCount;
+    VertexAttribute *attributes;
+} DynamicVertex;
+*/
+
 // IDEA: every object has its own hierarchy and objects will only hold indices to child objects
 // TODO: systems
 
-// FIX: townscaper style generation
+// TODO: townscaper style generation
+#include "arrayDynamics.h"
+
+typedef Vec3 VertexPosition;
+typedef void VertexAttribute;
+
+// TODO: Graph structures
+typedef struct GraphNode_t GraphNode;
+typedef struct GraphEdge_t GraphEdge;
+// typedef struct GraphFace_t GraphFace;
+
+struct HexagonalGraphNode_t {
+    u32 connectionCount;
+    u32 connectedNodes[6];
+};
+
+bool hexGridRelaxed() {
+    const int layerCount = 4;
+    const float layerDistance = 1.1;
+
+    const int vertexCount = 3*layerCount*(layerCount + 1)+ 1;
+    const u32 edgeCount = 3*layerCount*(3*layerCount + 1)*2;
+
+    const u32 vertexBufferSize = sizeof(Vec2) * vertexCount;
+    Vec2 *vertices = malloc(vertexBufferSize);
+    u32 (*edges)[2] = malloc(edgeCount * sizeof(u32[2]));
+
+    if ((vertices == nullptr) || (edges == nullptr)){
+        free(vertices);
+        free(edges);
+        return false;
+    }
+
+    // place vertices
+    vertices[0] = (Vec2){.data = {0,0}};
+    int placedVertices = 1;
+    // build hexagon layer by layer
+    for (int i = 0; i < layerCount; i++) {
+        // treat hexagon as 6 equal triangles
+        // for each triangle
+        for (int j = 0; j < 6; j++) {
+            // create a starting point
+            Vec2 edgeStart;
+            glm_vec2_rotate((vec2){0, layerDistance * i + 1}, GLM_PI * j / 3, edgeStart.data);
+
+            Vec2 target = edgeStart;
+
+            Vec2 step;
+            glm_vec2_rotate(edgeStart.data, GLM_PI * 2 / 3, step.data);
+            glm_vec2_normalize(step.data);
+            glm_vec2_scale(step.data, layerDistance, step.data);
+
+            // travel trough the edge
+            for (int k = 0; k < (i + 1); k++)
+            {
+                vertices[placedVertices] = target;
+                glm_vec2_add(target.data, step.data, target.data);
+                placedVertices += 1;
+            }
+        }
+    }
+
+    // create edges 
+    // (think visually) select 2 points (I thought them as spiraling) and connect them
+    int placedEdges = 0;
+    // vertex index of the selected points
+
+    u32 up = 1;
+    u32 down = 0;
+    for (int layer = 0; layer < layerCount; layer++)
+    {
+        for (int slice = 0; slice < 6; slice++)
+        {
+            // put initial edge
+            edges[placedEdges][0] = down;
+            edges[placedEdges][1] = up;
+            placedEdges += 1;
+
+            for (int i = 0; i < layer; i++)
+            {
+                up++;
+                edges[placedEdges][0] = down;
+                edges[placedEdges][1] = up;
+                placedEdges += 1;
+
+                down++;
+                edges[placedEdges][0] = down;
+                edges[placedEdges][1] = up;
+                placedEdges += 1;
+            }
+
+            up++;
+        }
+        down++;
+        
+        // fix last edge of the frame
+        if (layer > 0)
+        {
+            down--;
+            edges[placedEdges - 1][0] -= 6*layer;
+        }
+    }
+
+    // hexagonal frame
+    for (int layer = 0; layer < layerCount; layer++)
+    {
+        u32 current =  3*layer*(layer + 1) + 1;
+        for (int i = 0; i < 6*(layer+1); i++)
+        {
+            edges[placedEdges][0] = current;
+            edges[placedEdges][1] = current + 1;
+            placedEdges += 1;
+            current++;
+        }
+        
+        // fix last edge of the frame
+        edges[placedEdges - 1][1] -= 6*(layer + 1);
+    }
+
+    unsigned int vao, vbo, ebo;
+    glGenVertexArrays(1, &vao);
+    glGenBuffers(1, &vbo);
+    glGenBuffers(1, &ebo);
+
+    glBindVertexArray(vao);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+
+    glBufferData(GL_ARRAY_BUFFER, vertexBufferSize, vertices, GL_STREAM_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, placedEdges * sizeof(u32[2]), (float*)edges, GL_STREAM_DRAW);
+
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vec2), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    glUseProgram(globalShader);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glDrawElements(GL_LINES, placedEdges * 2, GL_UNSIGNED_INT, 0);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+    glBindVertexArray(0);
+    glDeleteVertexArrays(1, &vao);
+    glDeleteBuffers(1, &vbo);
+    glDeleteBuffers(1, &ebo);
+
+    free(vertices);
+    free(edges);
+    return true;
+}
+
 bool drawLayeredHexagon() {
-    const int layerCount = 2;
+    const int layerCount = 4;
     const float layerDistance = 1.1;
 
     const int vertexCount = (layerCount + 1)*layerCount*3 + 1;
+    const int edgeCount = ((3*layerCount*layerCount) - layerCount) * 3;
+
     const int triangleCount = layerCount * layerCount * 6;
     const int indexCount = triangleCount * 3;
 
@@ -102,9 +262,11 @@ bool drawLayeredHexagon() {
     Vec2 *vertices = malloc(vertexBufferSize);
     int *indices = malloc(indexBufferSize);
 
-    // FIX: proper nullptr handling
-    assert(vertices && indices);
-
+    if ((vertices == nullptr) || (indices == nullptr)){
+        free(vertices);
+        free(indices);
+        return false;
+    }
 
     // place vertices
     //
@@ -136,7 +298,7 @@ bool drawLayeredHexagon() {
         }
     }
 
-        // create triangles
+    // create triangles
     // -------------------------------------------------------------------------------------------
     // clockwise
     int passedVertices = 1;
@@ -178,8 +340,6 @@ bool drawLayeredHexagon() {
             down--;
         }
 
-        down = passedVertices;
-
         if (i != 0)
         {
             indices[placedIndices - 4] -= i * 6;
@@ -187,6 +347,7 @@ bool drawLayeredHexagon() {
         }
         indices[placedIndices - 1] -= (i + 1) * 6;
 
+        down = passedVertices;
         passedVertices += verticesInNextLayer;
     }
 
@@ -207,7 +368,9 @@ bool drawLayeredHexagon() {
 
     glUseProgram(globalShader);
     // glDrawElements(GL_LINE_STRIP, placedIndices, GL_UNSIGNED_INT, 0);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glDrawElements(GL_TRIANGLES, placedIndices, GL_UNSIGNED_INT, 0);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     free(vertices);
     free(indices);
@@ -356,10 +519,11 @@ int main(void)
             glm_translate(model, (vec3){-1.2f, -sin(glfwGetTime()), 0.0f});
             glUniformMatrix4fv(uModel, 1, false, (float*)&model);
 
-            drawLayeredHexagon();
+            hexGridRelaxed();
+            // drawLayeredHexagon();
 
             // drawGrid(helloShader);
-            drawGrid(helloShader);
+            // drawGrid(helloShader);
         }
 
         // render gui here

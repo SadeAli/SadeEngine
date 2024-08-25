@@ -1,12 +1,10 @@
 #include "arrayDynamics.h"
 #include "defines.h"
-#include "memory.h"
 #include <string.h>
+#include <stdlib.h>
 
-bool appendArrayDynamic(void **array, const u32 unitSize, u32 *size, u32 *capacity, void *appendData)
+bool appendArrayDynamic(void **array, u32 *size, u32 *capacity, void const *appendData, u32 unitSize, u32 capacityIncrement)
 {
-    const u32 scaleByUnits = 1;
-
     // dont bother with pointers (it's dangerous you know)
     u32 localCapacity = *capacity;
     u32 localSize = *size;
@@ -14,7 +12,7 @@ bool appendArrayDynamic(void **array, const u32 unitSize, u32 *size, u32 *capaci
     // resize if capacity insufficient
     if (localCapacity <= localSize)
     {
-        localCapacity = (localSize + scaleByUnits);
+        localCapacity = (localSize + capacityIncrement);
 
         if (arrayScale(array, localCapacity * unitSize) == false)
         {
