@@ -1,8 +1,11 @@
 #pragma once
 
+#define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 #define CIMGUI_DEFINE_ENUMS_AND_STRUCTS
 #include <cimgui.h>
+
+typedef struct Vector2_t Vector2;
 
 typedef struct WindowSettings
 {
@@ -49,3 +52,7 @@ void window_swapBuffers(Window *window);
 double window_getFrameTime(Window *window);
 void window_pollEvents();
 void window_close(Window *window);
+Vector2 window_getMouseDelta(Window *window);
+Vector2 window_getCursorPos(Window *window);
+void window_hideCursor(Window *window);
+void window_centerCursor(Window *window);

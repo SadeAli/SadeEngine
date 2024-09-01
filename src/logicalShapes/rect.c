@@ -1,7 +1,7 @@
-#include "vec.h"
 #include "rect.h"
+#include "vec.h"
 
-Rect init_rect(vec2 position, vec2 size)
+Rect init_rect(Vec2 position, Vec2 size)
 {
     return (Rect) {
         .position = position,

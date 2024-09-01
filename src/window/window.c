@@ -15,10 +15,44 @@
 #include "window.h"
 #include "GLFW/glfw3.h"
 
+struct Vector2_t {
+    float x, y;
+};
+
+static inline Vector2 vec2Sub(Vector2 a, Vector2 b) {
+    return (Vector2){
+        .x = a.x - b.x,
+        .y = a.y - b.y
+    };
+}
+
 static bool glfwStarted = 0;
+
+void window_centerCursor(Window *window) {
+    glfwSetCursorPos(window->glfwWindow, 0, 0);
+}
+
+void window_hideCursor(Window *window) {
+    // glfwSetInputMode(window->glfwWindow, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+    glfwSetInputMode(window->glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+}
 
 void window_resizeCallback(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
+}
+
+Vector2 window_getCursorPos(Window *window) {
+    double x, y;
+    glfwGetCursorPos(window->glfwWindow, &x, &y);
+    return (Vector2){(float)x, (float)y};
+}
+
+Vector2 window_getMouseDelta(Window *window) {
+    static Vector2 oldPos = {0};
+    const Vector2 newPos = window_getCursorPos(window);
+    const Vector2 delta = vec2Sub(newPos, oldPos);
+    oldPos = newPos;
+    return delta;
 }
 
 Window init_window(const WindowSettings ws[static 1])

@@ -8,7 +8,7 @@ include_directories(${PROJECT_SOURCE_DIR}/src/external/gladFiles)
 # include_directories(${PROJECT_SOURCE_DIR}/src/math)
 
 # Source files
-set(SOURCES main.c window.c)
+set(SOURCES main.c)
 
 # Executable
 add_executable(${PROJECT_NAME} ${SOURCES})
@@ -18,22 +18,25 @@ add_executable(${PROJECT_NAME} ${SOURCES})
 add_subdirectory(memory)
 # add_subdirectory(2d)
 add_subdirectory(external)
+add_subdirectory(window)
+add_subdirectory(gui)
 add_subdirectory(render)
 add_subdirectory(io)
 add_subdirectory(utils)
 add_subdirectory(camera)
-add_subdirectory(shapes)
+add_subdirectory(glShapes)
 
 target_compile_options(${PROJECT_NAME} PRIVATE -g -O0 -fsanitize=address)
 
 target_link_libraries(
   ${PROJECT_NAME}
-  PRIVATE glfw
-          raylib
+  PRIVATE window
           m
           cglm
           cimgui
           assimp
+          gui
+          glShapes
           -fsanitize=address)
 
 add_subdirectory(external/cglm)

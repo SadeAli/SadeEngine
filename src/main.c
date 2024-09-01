@@ -1,15 +1,15 @@
-#include "cglm/vec2.h"
-#include <stdlib.h>
+#include "assimp/mesh.h"
 #define GLFW_INCLUDE_NONE
 
-#include <assert.h>
-#include <math.h>
+// stdlib
+#include <stdlib.h>
 #include <stdio.h>
-
-// windowing
-#include <GLFW/glfw3.h>
+#include <math.h>
+#include <time.h>
+#include <assert.h>
 
 // vector/matrix operations
+#include <cglm/vec2.h>
 #include <cglm/vec3.h>
 #include <cglm/mat4.h>
 #include <cglm/types.h>
@@ -32,10 +32,6 @@
 #define CIMGUI_DEFINE_ENUMS_AND_STRUCTS
 #include <cimgui.h>
 
-#define CIMGUI_USE_GLFW
-#define CIMGUI_USE_OPENGL3
-#include <cimgui_impl.h>
-
 // model loader libs
 #include <assimp/cimport.h>
 #include <assimp/scene.h>
@@ -43,12 +39,17 @@
 
 // custom engine
 #include "window.h"
+#include "gui/gui.h"
 #include "render/shader.h"
 #include "render/drawable.h"
 #include "defines.h"
 #include "camera/camera3d.h"
-#include "shapes/grid.h"
+#include "glShapes.h"
 #include "math/vec.h"
+
+struct Vector2_t {
+    float x, y;
+};
 
 struct Engine
 {
@@ -66,7 +67,7 @@ struct Engine
 static OpenglShader globalShader = 0;
 
 // TODO: import and process 3D models
-static bool import_example() {
+Drawable import_example() {
     const struct aiScene* scene = aiImportFile( "resources/models/assimp-mdb/model-db/fbx/huesitos.fbx",
                 aiProcess_CalcTangentSpace       |
                 aiProcess_Triangulate            |
@@ -75,313 +76,85 @@ static bool import_example() {
 
     if( NULL == scene) {
         printf("%s", aiGetErrorString());
-        return false;
+        return (Drawable){0};
     }
 
+    u32 vao, vbo, ebo;
+    glGenVertexArrays(1, &vao);
+    glGenBuffers(1, &vbo);
+    glGenBuffers(1, &ebo);
+
+    glBindVertexArray(vao);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+
+    long totalVertexSize = 0;
+    for (u32 i = 0; i < scene->mNumMeshes; i++) {
+        totalVertexSize += scene->mMeshes[i]->mNumVertices * sizeof(*scene->mMeshes[i]->mVertices);
+    }
+
+    // Allocate buffer memory
+    glBufferData(GL_ARRAY_BUFFER, totalVertexSize, NULL, GL_STATIC_DRAW);
+
+    // Calculate total size of element buffer
+    long totalElementSize = 0;
+    for (u32 i = 0; i < scene->mNumMeshes; i++) {
+        for (u32 j = 0; j < scene->mMeshes[i]->mNumFaces; j++) {
+            totalElementSize += scene->mMeshes[i]->mFaces[j].mNumIndices * sizeof(*scene->mMeshes[i]->mFaces[j].mIndices);
+        }
+    }
+
+    // Allocate buffer memory
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, totalElementSize, NULL, GL_STATIC_DRAW);
+
     // TODO: process mesh
+    long vboOffset = 0;
+    for (u32 i = 0; i < scene->mNumMeshes; i++)
+    {
+        struct aiMesh *mesh = scene->mMeshes[i];
+        glBufferSubData(GL_ARRAY_BUFFER,
+                        vboOffset,
+                        mesh->mNumVertices * sizeof(*mesh->mVertices),
+                        mesh->mVertices);
+        vboOffset += mesh->mNumVertices * sizeof(*mesh->mVertices);
+    }
+
+    long eboOffset = 0;
+    for (u32 i = 0; i < scene->mNumMeshes; i++)
+    {
+        const struct aiMesh mesh = *scene->mMeshes[i];
+        for (u32 j = 0; j < mesh.mNumFaces; j++)
+        {
+            const struct aiFace face = mesh.mFaces[j];
+            glBufferSubData(GL_ELEMENT_ARRAY_BUFFER,
+                            eboOffset,
+                            face.mNumIndices * sizeof(*face.mIndices),
+                            face.mIndices);
+            eboOffset += face.mNumIndices * sizeof(*face.mIndices);
+        }
+    }
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(vec3), (void *)0);
+    glEnableVertexAttribArray(0);
+
+    glDeleteBuffers(scene->mNumMeshes, &vbo);
+    glDeleteBuffers(scene->mNumMeshes, &ebo);
 
     // NOTE: after import
     aiReleaseImport(scene);
 
-    return true;
+    GLenum error = 0;
+    while ((error = glGetError())) {
+        printf("error: %d\n", error);
+    }
+
+    return (Drawable){.vao = vao, .elementCount = eboOffset};
 }
 
 // TODO: make a verrtex struct which can hold various attributes (attributes will be bynamically added (before making it concreate))
-/*
-typedef struct DynamicVertex_t {
-    VertexPosition position;
-    u32 attributeCount;
-    VertexAttribute *attributes;
-} DynamicVertex;
-*/
 
 // IDEA: every object has its own hierarchy and objects will only hold indices to child objects
 // TODO: systems
-
-// TODO: townscaper style generation
-#include "arrayDynamics.h"
-
-typedef Vec3 VertexPosition;
-typedef void VertexAttribute;
-
-// TODO: Graph structures
-typedef struct GraphNode_t GraphNode;
-typedef struct GraphEdge_t GraphEdge;
-// typedef struct GraphFace_t GraphFace;
-
-struct HexagonalGraphNode_t {
-    u32 connectionCount;
-    u32 connectedNodes[6];
-};
-
-bool hexGridRelaxed() {
-    const int layerCount = 4;
-    const float layerDistance = 1.1;
-
-    const int vertexCount = 3*layerCount*(layerCount + 1)+ 1;
-    const u32 edgeCount = 3*layerCount*(3*layerCount + 1)*2;
-
-    const u32 vertexBufferSize = sizeof(Vec2) * vertexCount;
-    Vec2 *vertices = malloc(vertexBufferSize);
-    u32 (*edges)[2] = malloc(edgeCount * sizeof(u32[2]));
-
-    if ((vertices == nullptr) || (edges == nullptr)){
-        free(vertices);
-        free(edges);
-        return false;
-    }
-
-    // place vertices
-    vertices[0] = (Vec2){.data = {0,0}};
-    int placedVertices = 1;
-    // build hexagon layer by layer
-    for (int i = 0; i < layerCount; i++) {
-        // treat hexagon as 6 equal triangles
-        // for each triangle
-        for (int j = 0; j < 6; j++) {
-            // create a starting point
-            Vec2 edgeStart;
-            glm_vec2_rotate((vec2){0, layerDistance * i + 1}, GLM_PI * j / 3, edgeStart.data);
-
-            Vec2 target = edgeStart;
-
-            Vec2 step;
-            glm_vec2_rotate(edgeStart.data, GLM_PI * 2 / 3, step.data);
-            glm_vec2_normalize(step.data);
-            glm_vec2_scale(step.data, layerDistance, step.data);
-
-            // travel trough the edge
-            for (int k = 0; k < (i + 1); k++)
-            {
-                vertices[placedVertices] = target;
-                glm_vec2_add(target.data, step.data, target.data);
-                placedVertices += 1;
-            }
-        }
-    }
-
-    // create edges 
-    // (think visually) select 2 points (I thought them as spiraling) and connect them
-    int placedEdges = 0;
-    // vertex index of the selected points
-
-    u32 up = 1;
-    u32 down = 0;
-    for (int layer = 0; layer < layerCount; layer++)
-    {
-        for (int slice = 0; slice < 6; slice++)
-        {
-            // put initial edge
-            edges[placedEdges][0] = down;
-            edges[placedEdges][1] = up;
-            placedEdges += 1;
-
-            for (int i = 0; i < layer; i++)
-            {
-                up++;
-                edges[placedEdges][0] = down;
-                edges[placedEdges][1] = up;
-                placedEdges += 1;
-
-                down++;
-                edges[placedEdges][0] = down;
-                edges[placedEdges][1] = up;
-                placedEdges += 1;
-            }
-
-            up++;
-        }
-        down++;
-        
-        // fix last edge of the frame
-        if (layer > 0)
-        {
-            down--;
-            edges[placedEdges - 1][0] -= 6*layer;
-        }
-    }
-
-    // hexagonal frame
-    for (int layer = 0; layer < layerCount; layer++)
-    {
-        u32 current =  3*layer*(layer + 1) + 1;
-        for (int i = 0; i < 6*(layer+1); i++)
-        {
-            edges[placedEdges][0] = current;
-            edges[placedEdges][1] = current + 1;
-            placedEdges += 1;
-            current++;
-        }
-        
-        // fix last edge of the frame
-        edges[placedEdges - 1][1] -= 6*(layer + 1);
-    }
-
-    unsigned int vao, vbo, ebo;
-    glGenVertexArrays(1, &vao);
-    glGenBuffers(1, &vbo);
-    glGenBuffers(1, &ebo);
-
-    glBindVertexArray(vao);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-
-    glBufferData(GL_ARRAY_BUFFER, vertexBufferSize, vertices, GL_STREAM_DRAW);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, placedEdges * sizeof(u32[2]), (float*)edges, GL_STREAM_DRAW);
-
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vec2), (void*)0);
-    glEnableVertexAttribArray(0);
-
-    glUseProgram(globalShader);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    glDrawElements(GL_LINES, placedEdges * 2, GL_UNSIGNED_INT, 0);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-    glBindVertexArray(0);
-    glDeleteVertexArrays(1, &vao);
-    glDeleteBuffers(1, &vbo);
-    glDeleteBuffers(1, &ebo);
-
-    free(vertices);
-    free(edges);
-    return true;
-}
-
-bool drawLayeredHexagon() {
-    const int layerCount = 4;
-    const float layerDistance = 1.1;
-
-    const int vertexCount = (layerCount + 1)*layerCount*3 + 1;
-    const int edgeCount = ((3*layerCount*layerCount) - layerCount) * 3;
-
-    const int triangleCount = layerCount * layerCount * 6;
-    const int indexCount = triangleCount * 3;
-
-    const u32 vertexBufferSize = sizeof(Vec2) * vertexCount;
-    const u32 indexBufferSize = sizeof(u32) * indexCount;
-    Vec2 *vertices = malloc(vertexBufferSize);
-    int *indices = malloc(indexBufferSize);
-
-    if ((vertices == nullptr) || (indices == nullptr)){
-        free(vertices);
-        free(indices);
-        return false;
-    }
-
-    // place vertices
-    //
-    // place first vector
-    vertices[0] = (Vec2){.data = {0,0}};
-    int placedVertices = 1;
-
-    // place the rest
-    for (int i = 0; i < layerCount; i++) {
-        // for each edge of the hexagon
-        for (int j = 0; j < 6; j++) {
-            Vec2 edgeStart;
-            glm_vec2_rotate((vec2){0, layerDistance * i + 1}, GLM_PI * j / 3, edgeStart.data);
-
-            Vec2 target = edgeStart;
-
-            Vec2 step;
-            glm_vec2_rotate(edgeStart.data, GLM_PI * 2 / 3, step.data);
-            glm_vec2_normalize(step.data);
-            glm_vec2_scale(step.data, layerDistance, step.data);
-
-            // travel trough the edge
-            for (int k = 0; k < (i + 1); k++)
-            {
-                vertices[placedVertices] = target;
-                glm_vec2_add(target.data, step.data, target.data);
-                placedVertices += 1;
-            }
-        }
-    }
-
-    // create triangles
-    // -------------------------------------------------------------------------------------------
-    // clockwise
-    int passedVertices = 1;
-    int placedIndices = 0;
-    int up = 1;
-    int down = 0;
-    for (int i = 0; i < layerCount; i++)
-    {
-        int verticesInNextLayer = (i + 1) * 6;
-
-        for (int j = 0; j < 6; j++)
-        {
-            // first triangle
-            indices[placedIndices++] = up++;
-            indices[placedIndices++] = down++;
-            indices[placedIndices++] = up++;
-
-            // generate the rest using strip method
-            for (int k = 0; k < i; k++)
-            {
-                // strip
-                indices[placedIndices] = indices[placedIndices - 1];
-                indices[placedIndices + 1] = indices[placedIndices - 2];
-
-                // new index
-                indices[placedIndices + 2] = down++;
-                placedIndices += 3;
-
-                // strip
-                indices[placedIndices] = indices[placedIndices - 3];
-                indices[placedIndices + 1] = indices[placedIndices - 1];
-
-                // new index
-                indices[placedIndices + 2] = up++;
-                placedIndices += 3;
-            }
-
-            up--;
-            down--;
-        }
-
-        if (i != 0)
-        {
-            indices[placedIndices - 4] -= i * 6;
-            indices[placedIndices - 2] -= i * 6;
-        }
-        indices[placedIndices - 1] -= (i + 1) * 6;
-
-        down = passedVertices;
-        passedVertices += verticesInNextLayer;
-    }
-
-    unsigned int vao, vbo, ebo;
-    glGenVertexArrays(1, &vao);
-    glGenBuffers(1, &vbo);
-    glGenBuffers(1, &ebo);
-
-    glBindVertexArray(vao);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-
-    glBufferData(GL_ARRAY_BUFFER, vertexBufferSize, vertices, GL_STREAM_DRAW);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexBufferSize, indices, GL_STREAM_DRAW);
-
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vec2), (void*)0);
-    glEnableVertexAttribArray(0);
-
-    glUseProgram(globalShader);
-    // glDrawElements(GL_LINE_STRIP, placedIndices, GL_UNSIGNED_INT, 0);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    glDrawElements(GL_TRIANGLES, placedIndices, GL_UNSIGNED_INT, 0);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-    free(vertices);
-    free(indices);
-
-    glBindVertexArray(0);
-    glDeleteVertexArrays(1, &vao);
-    glDeleteBuffers(1, &vbo);
-    glDeleteBuffers(1, &ebo);
-
-    return true;
-}
 
 
 // NOTE: main
@@ -389,6 +162,7 @@ int main(void)
 {
     // window init
     Window window = init_windowDefault();
+    window_hideCursor(&window);
 
     ShaderFile sList[] = {
         {"resources/shaders/texture_projection.fs", SHADER_TYPE_FRAGMENT},
@@ -405,14 +179,16 @@ int main(void)
         {"resources/shaders/hello.fs", SHADER_TYPE_FRAGMENT},
         {"resources/shaders/texture_projection_2dto3d.vs", SHADER_TYPE_VERTEX},
     };
- 
-    ImGuiIO *ioptr = igGetIO();
-    ioptr->ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;   // Enable Keyboard Controls   
+
+    ShaderFile s4List[] = {
+        {"resources/shaders/hello.fs", SHADER_TYPE_FRAGMENT},
+        {"resources/shaders/2d.vs", SHADER_TYPE_VERTEX}
+    };
 
     // gl settings
     glEnable(GL_DEPTH_TEST);
     glClearColor(105 / 255.0, 18 / 255.0, 18 / 255.0, 1);
-    glLineWidth(5);
+    glLineWidth(2);
 
     // NOTE:
     // init objects here
@@ -426,18 +202,19 @@ int main(void)
 
     OpenglShader helloShader = init_openglShaderProgram(s2List, 2);
     globalShader = init_openglShaderProgram(s3List, 2);
-
+    OpenglShader shade2d = init_openglShaderProgram(s4List, 2);
     u32 cube = init_cube_vao_textured();
 
     assert(cube);
     assert(d.shader);
+    assert(shade2d);
     assert(d.vao);
 
     // create matrices
     mat4 model = GLM_MAT4_IDENTITY_INIT;
     mat4 view = GLM_MAT4_IDENTITY_INIT;
     mat4 projection = GLM_MAT4_IDENTITY_INIT;
-    glm_perspective(55, 16.0f/9.0f, 0.1f, 100.0f, projection);
+    glm_perspective(55, 16.0f/9.0f, 0.01f, 1000.0f, projection);
 
     // move data to shader
     glUseProgram(d.shader);
@@ -474,27 +251,37 @@ int main(void)
 
     // initialize camera
     Camera3D camera = {
-        .position = {0, 5, 0},
+        .position = {0, 5, 5},
         .target = {0,0,0},
-        .up = {0,1,0},
+        .up = {0,-1,0},
     };
+
+    Drawable model_drawable = import_example();
+    model_drawable.shader = globalShader;
+
+    assert(model_drawable.vao);
 
     // main loop
     bool demo = 1;
+    bool request = 0;
+    glm_lookat(camera.position, camera.target, camera.up, camera.view);
     while(!window_shouldClose(&window)) {
 
         // handle logic here
         {
-            camera3d_updateOrbital(&camera, 0.3, 3);
+            // camera3d_updateOrbital(&camera, 0.3, 3);
+            float sensivity = 0.2;
+            const Vector2 mouseDelta = window_getMouseDelta(&window);
+            camera3d_updateFirstPerson(&camera, mouseDelta.x * sensivity, mouseDelta.y * sensivity);
 
             glUseProgram(d.shader);
-            glUniformMatrix4fv(uView, 1, false, (float*)&camera.view);
+            glUniformMatrix4fv(uView, 1, false, (float*)camera.view);
 
             glUseProgram(helloShader);
-            glUniformMatrix4fv(u2View, 1, false, (float*)&camera.view);
+            glUniformMatrix4fv(u2View, 1, false, (float*)camera.view);
 
             glUseProgram(globalShader);
-            glUniformMatrix4fv(u3View, 1, false, (float*)&camera.view);
+            glUniformMatrix4fv(u3View, 1, false, (float*)camera.view);
         }
 
         // render settings
@@ -505,38 +292,35 @@ int main(void)
 
         // render objects here
         {
-            glUseProgram(d.shader);
-            glad_glBindVertexArray(cube);
-            glDrawArrays(GL_TRIANGLES, 0, 36);
+            drawGrid(helloShader);
 
-            // // draw again with slight offset
-            glm_translate(model, (vec3){1.2f, sin(glfwGetTime()), 0.0f});
-            glUseProgram(d.shader);
-            glUniformMatrix4fv(uModel, 1, false, (float*)&model);
-            // glad_glBindVertexArray(cube);
-            glDrawArrays(GL_TRIANGLES, 0, 36);
-            // glDrawArrays(GL_LINE_STRIP, 0, 36);
-            glm_translate(model, (vec3){-1.2f, -sin(glfwGetTime()), 0.0f});
-            glUniformMatrix4fv(uModel, 1, false, (float*)&model);
+            if (request) {
+                glUseProgram(d.shader);
+                glBindVertexArray(cube);
+                glDrawArrays(GL_TRIANGLES, 0, 36);
+            }
 
-            hexGridRelaxed();
-            // drawLayeredHexagon();
+            glUseProgram(shade2d);
+            // drawRect((Vec2){10, 10}, (Vec2){100, 100});
 
-            // drawGrid(helloShader);
-            // drawGrid(helloShader);
+            // drawable_draw(model_drawable);
         }
 
         // render gui here
+        guiBegin();
         {
-            ImGui_ImplOpenGL3_NewFrame();
-            ImGui_ImplGlfw_NewFrame();
+            bool open = 1;
+            if (igBegin("tools", &open, ImGuiConfigFlags_None)) 
+            {
+                if (igButton("add cube", (ImVec2){0, 0})) {
+                    request = !request;
+                }
+            }
+            igEnd();
 
-            igNewFrame();
-            // igShowDemoWindow(&demo);
-
-            igRender();
-            ImGui_ImplOpenGL3_RenderDrawData(igGetDrawData());
+            igShowDemoWindow(&demo);
         }
+        guiEnd();
 
         // post render
         {

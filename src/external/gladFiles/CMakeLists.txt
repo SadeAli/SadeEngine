@@ -1,1 +1,2 @@
-target_sources(${PROJECT_NAME} PRIVATE glad.c)
+add_library(glad glad.c)
+target_include_directories(glad PUBLIC .)

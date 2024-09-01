@@ -24,7 +24,7 @@ OpenglShaderProgram init_openglShaderProgram(ShaderFile sList[static 1], int sha
     glLinkProgram(shaderProgram);
 
     int success = 0;
-    static char infoLog[512];
+    static char infoLog[GL_INFO_LOG_LENGTH];
     glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
     if (!success) {
         glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
@@ -32,6 +32,7 @@ OpenglShaderProgram init_openglShaderProgram(ShaderFile sList[static 1], int sha
         printf("\t%s\n", infoLog);
 
         glDeleteProgram(shaderProgram);
+        return 0;
     }
 
     return shaderProgram;
@@ -69,7 +70,7 @@ OpenglShader init_openglShader(const char *shaderPath, enum ShaderType shaderTyp
     // compile shader
     // WARN: static variable is bad here
     // TODO: make static infolog dynamic or parametric
-    static char infoLog[512];
+    static char infoLog[GL_INFO_LOG_LENGTH];
     int success = 0;
     glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
     if (!success) {

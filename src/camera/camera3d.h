@@ -16,4 +16,4 @@ typedef struct Camera3D_t {
 
 void camera3d_recalculate(Camera3D *cam);
 void camera3d_updateOrbital(Camera3D *cam, float rotSpeed, float radius);
-
+void camera3d_updateFirstPerson(Camera3D *cam, float yaw, float pitch);

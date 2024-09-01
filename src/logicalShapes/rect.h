@@ -4,10 +4,10 @@
 
 typedef struct Rectangle_t
 {
-    vec2 position;
-    vec2 size;
+    Vec2 position;
+    Vec2 size;
 } Rectangle;
 
 typedef Rectangle Rect;
 
-Rect init_rect(vec2 position, vec2 size);
+Rect init_rect(Vec2 position, Vec2 size);

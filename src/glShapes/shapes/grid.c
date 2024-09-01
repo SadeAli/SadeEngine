@@ -1,10 +1,9 @@
-
 #include "grid.h"
 #include "render/shader.h"
 #include "defines.h"
 #include "stdio.h"
 #include "stdlib.h"
-#include "math/vec.h"
+#include "vec.h"
 
 void drawGrid(OpenglShader s) {
     int radius = 5;

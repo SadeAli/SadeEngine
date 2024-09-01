@@ -3,7 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-bool appendArrayDynamic(void **array, u32 *size, u32 *capacity, void const *appendData, u32 unitSize, u32 capacityIncrement)
+bool appendArrayDynamic(void **array, u32 *size, u32 *capacity, const void *appendData, u32 unitSize, u32 capacityIncrement)
 {
     // dont bother with pointers (it's dangerous you know)
     u32 localCapacity = *capacity;
