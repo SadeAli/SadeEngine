@@ -34,15 +34,14 @@
 // model loader libs
 #include <assimp/cimport.h>
 #include <assimp/scene.h>
+#include <assimp/mesh.h>
 #include <assimp/postprocess.h>
 
-#include "GLFW/glfw3.h"
-#include "assimp/mesh.h"
 
 // custom engine
 #include "window.h"
 #include "gui/gui.h"
-#include "render/shader.h"
+#include "shader.h"
 #include "render/drawable.h"
 #include "defines.h"
 #include "camera/camera3d.h"

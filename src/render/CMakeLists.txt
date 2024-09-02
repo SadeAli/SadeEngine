@@ -1,1 +1,2 @@
-target_sources(${PROJECT_NAME} PRIVATE shader.c drawable.c shaderManager.c)
+add_subdirectory(glShapes)
+target_sources(${PROJECT_NAME} PRIVATE drawable.c)

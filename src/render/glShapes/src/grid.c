@@ -1,5 +1,5 @@
 #include "grid.h"
-#include "render/shader.h"
+#include "shader.h"
 #include "defines.h"
 #include "stdio.h"
 #include "stdlib.h"

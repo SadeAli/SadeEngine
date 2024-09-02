@@ -1,7 +1,7 @@
 #include "shader.h"
-#include "glad/glad.h"
+#include "fileBuffer.h"
+#include <glad/glad.h>
 #include <stdio.h>
-#include "io/file.h"
 
 ShaderProgram construct_shaderProgram(ShaderFile sList[static 1], int shaderCount) {
     // create shader

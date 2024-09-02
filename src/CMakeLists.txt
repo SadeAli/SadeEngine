@@ -20,9 +20,9 @@ add_subdirectory(window)
 add_subdirectory(memory)
 add_subdirectory(gui)
 add_subdirectory(render)
-add_subdirectory(io)
+add_subdirectory(resource)
+add_subdirectory(fileBuffer)
 add_subdirectory(camera)
-add_subdirectory(glShapes)
 
 target_compile_options(${PROJECT_NAME} PRIVATE -g -O0 -fsanitize=address)
 
@@ -36,6 +36,8 @@ target_link_libraries(
           gui
           glShapes
           dynamicArray
+          shaderManager
+          shader
           -fsanitize=address)
 
 add_subdirectory(external/cglm)
