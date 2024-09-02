@@ -5,15 +5,20 @@
 typedef unsigned int OpenglShaderProgram;
 typedef unsigned int OpenglShader;
 
-enum ShaderType {
+enum OpenglShaderType {
     SHADER_TYPE_FRAGMENT = GL_FRAGMENT_SHADER,
     SHADER_TYPE_VERTEX = GL_VERTEX_SHADER,
 };
 
+typedef OpenglShaderProgram ShaderProgram;
+typedef OpenglShader Shader;
+typedef enum OpenglShaderType ShaderType;
+
 typedef struct ShaderFile_t {
     char *path;
-    enum ShaderType type;
+    ShaderType type;
 } ShaderFile;
 
-OpenglShader init_openglShader(const char *shaderPath, enum ShaderType shaderType);
-OpenglShaderProgram init_openglShaderProgram(ShaderFile sList[static 1], int shaderCount);
+OpenglShader construct_shader(const char *shaderPath, ShaderType shaderType);
+OpenglShaderProgram construct_shaderProgram(ShaderFile sList[static 1], int shaderCount);
+void shaderProgram_use(ShaderProgram s);

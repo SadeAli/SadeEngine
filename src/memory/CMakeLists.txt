@@ -1,1 +1,1 @@
-target_sources(${PROJECT_NAME} PRIVATE memory.c arrayDynamics.c arrayList.c)
+add_subdirectory(dynamicArray)

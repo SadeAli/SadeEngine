@@ -78,7 +78,7 @@ Window init_window(const WindowSettings ws[static 1])
     glfwSetWindowSizeLimits(glfwWindow, 16, 10, 2560, 1600);
 
     // TODO: make better pfs implementation
-    glfwSwapInterval(1);
+    // glfwSwapInterval(1);
 
     // load opengl functions
     int version = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);;

@@ -1,4 +1,3 @@
-#include "assimp/mesh.h"
 #define GLFW_INCLUDE_NONE
 
 // stdlib
@@ -36,6 +35,9 @@
 #include <assimp/cimport.h>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+
+#include "GLFW/glfw3.h"
+#include "assimp/mesh.h"
 
 // custom engine
 #include "window.h"
@@ -197,12 +199,12 @@ int main(void)
     Drawable d = {
         .vao = init_rect_vao(),
         .elementCount = 6,
-        .shader = init_openglShaderProgram(sList, 2),
+        .shader = construct_shaderProgram(sList, 2),
     };
 
-    OpenglShader helloShader = init_openglShaderProgram(s2List, 2);
-    globalShader = init_openglShaderProgram(s3List, 2);
-    OpenglShader shade2d = init_openglShaderProgram(s4List, 2);
+    ShaderProgram helloShader = construct_shaderProgram(s2List, 2);
+    globalShader = construct_shaderProgram(s3List, 2);
+    ShaderProgram shade2d = construct_shaderProgram(s4List, 2);
     u32 cube = init_cube_vao_textured();
 
     assert(cube);
@@ -330,6 +332,7 @@ int main(void)
     }
 
     // NOTE: clean resources
+    glDeleteVertexArrays(1, &model_drawable.vao);
     glDeleteVertexArrays(1, &d.vao);
     glDeleteProgram(d.shader);
 

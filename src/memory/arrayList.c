@@ -1,5 +1,5 @@
 #include "arrayList.h"
-#include "arrayDynamics.h"
+#include "dynamicArray.h"
 #include "defines.h"
 #include "memory.h"
 #include <stdio.h>

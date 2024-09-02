@@ -15,14 +15,12 @@ add_executable(${PROJECT_NAME} ${SOURCES})
 
 # Add subdirectories add_subdirectory(relativePosition)
 # add_subdirectory(editorClasses) add_subdirectory(vector)
-add_subdirectory(memory)
-# add_subdirectory(2d)
 add_subdirectory(external)
 add_subdirectory(window)
+add_subdirectory(memory)
 add_subdirectory(gui)
 add_subdirectory(render)
 add_subdirectory(io)
-add_subdirectory(utils)
 add_subdirectory(camera)
 add_subdirectory(glShapes)
 
@@ -37,6 +35,7 @@ target_link_libraries(
           assimp
           gui
           glShapes
+          dynamicArray
           -fsanitize=address)
 
 add_subdirectory(external/cglm)

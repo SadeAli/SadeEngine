@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include "io/file.h"
 
-OpenglShaderProgram init_openglShaderProgram(ShaderFile sList[static 1], int shaderCount) {
+ShaderProgram construct_shaderProgram(ShaderFile sList[static 1], int shaderCount) {
     // create shader
     OpenglShaderProgram shaderProgram = glCreateProgram();
     if (shaderProgram == 0) {
@@ -11,7 +11,7 @@ OpenglShaderProgram init_openglShaderProgram(ShaderFile sList[static 1], int sha
     }
 
     for (int i = 0; i < shaderCount; i++) {
-        OpenglShader shader = init_openglShader(sList[i].path, sList[i].type);
+        OpenglShader shader = construct_shader(sList[i].path, sList[i].type);
 
         if (!shader) {
             glDeleteProgram(shaderProgram);
@@ -38,7 +38,7 @@ OpenglShaderProgram init_openglShaderProgram(ShaderFile sList[static 1], int sha
     return shaderProgram;
 }
 
-OpenglShader init_openglShader(const char *shaderPath, enum ShaderType shaderType) {
+Shader construct_shader(const char *shaderPath, ShaderType shaderType) {
     // compile individual shaders
     OpenglShader shader = glCreateShader(shaderType);
     if (shader == 0) {
@@ -85,3 +85,6 @@ OpenglShader init_openglShader(const char *shaderPath, enum ShaderType shaderTyp
     return shader;
 }
 
+void shaderProgram_use(ShaderProgram s) {
+    glUseProgram(s);
+}

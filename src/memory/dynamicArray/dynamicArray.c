@@ -1,9 +1,9 @@
-#include "arrayDynamics.h"
+#include "dynamicArray.h"
 #include "defines.h"
 #include <string.h>
 #include <stdlib.h>
 
-bool appendArrayDynamic(void **array, u32 *size, u32 *capacity, const void *appendData, u32 unitSize, u32 capacityIncrement)
+bool array_appendDynamic(void **array, u32 *size, u32 *capacity, u32 unitSize, const void *appendData, u32 capacityIncrement)
 {
     // dont bother with pointers (it's dangerous you know)
     u32 localCapacity = *capacity;
@@ -14,7 +14,7 @@ bool appendArrayDynamic(void **array, u32 *size, u32 *capacity, const void *appe
     {
         localCapacity = (localSize + capacityIncrement);
 
-        if (arrayScale(array, localCapacity * unitSize) == false)
+        if (array_scale(array, localCapacity * unitSize) == false)
         {
             // we don't update anything since we failed
             return false;
@@ -22,17 +22,17 @@ bool appendArrayDynamic(void **array, u32 *size, u32 *capacity, const void *appe
     }
 
     // append
-    memcpy((*array + (unitSize * localSize)), appendData, unitSize);
+    memcpy(((char *)(*array) + (unitSize * localSize)), appendData, unitSize);
     localSize += 1;
 
     // write results
-    *capacity = localCapacity;
     *size = localSize;
+    *capacity = localCapacity;
 
     return true;
 }
 
-bool arrayScale(void **array, u64 newSize)
+bool array_scale(void **array, size_t newSize)
 {
     void *tmpPtr = realloc(*array, newSize);
     if (tmpPtr == nullptr)
