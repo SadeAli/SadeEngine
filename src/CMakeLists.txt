@@ -18,7 +18,6 @@ add_executable(${PROJECT_NAME} ${SOURCES})
 add_subdirectory(external)
 add_subdirectory(window)
 add_subdirectory(memory)
-add_subdirectory(gui)
 add_subdirectory(render)
 add_subdirectory(resource)
 add_subdirectory(fileBuffer)
@@ -38,6 +37,7 @@ target_link_libraries(
           dynamicArray
           shaderManager
           shader
+          modelLoader
           -fsanitize=address)
 
 add_subdirectory(external/cglm)

@@ -20,12 +20,9 @@
 
 // image loader
 #include <stb/stb_image.h>
-#define STB_PERLIN_IMPLEMENTATION
-#include <stb/stb_perlin.h>
 
 // opengl loader
 #include <glad/glad.h>
-#include <GL/gl.h>
 
 // GUI libs
 #define CIMGUI_DEFINE_ENUMS_AND_STRUCTS
@@ -37,16 +34,16 @@
 #include <assimp/mesh.h>
 #include <assimp/postprocess.h>
 
-
 // custom engine
 #include "window.h"
-#include "gui/gui.h"
+#include "gui.h"
 #include "shader.h"
 #include "render/drawable.h"
 #include "defines.h"
 #include "camera/camera3d.h"
 #include "glShapes.h"
 #include "math/vec.h"
+#include "modelLoader.h"
 
 struct Vector2_t {
     float x, y;
@@ -65,93 +62,6 @@ struct Engine
         },
 };
 
-static OpenglShader globalShader = 0;
-
-// TODO: import and process 3D models
-Drawable import_example() {
-    const struct aiScene* scene = aiImportFile( "resources/models/assimp-mdb/model-db/fbx/huesitos.fbx",
-                aiProcess_CalcTangentSpace       |
-                aiProcess_Triangulate            |
-                aiProcess_JoinIdenticalVertices  |
-                aiProcess_SortByPType);
-
-    if( NULL == scene) {
-        printf("%s", aiGetErrorString());
-        return (Drawable){0};
-    }
-
-    u32 vao, vbo, ebo;
-    glGenVertexArrays(1, &vao);
-    glGenBuffers(1, &vbo);
-    glGenBuffers(1, &ebo);
-
-    glBindVertexArray(vao);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-
-    long totalVertexSize = 0;
-    for (u32 i = 0; i < scene->mNumMeshes; i++) {
-        totalVertexSize += scene->mMeshes[i]->mNumVertices * sizeof(*scene->mMeshes[i]->mVertices);
-    }
-
-    // Allocate buffer memory
-    glBufferData(GL_ARRAY_BUFFER, totalVertexSize, NULL, GL_STATIC_DRAW);
-
-    // Calculate total size of element buffer
-    long totalElementSize = 0;
-    for (u32 i = 0; i < scene->mNumMeshes; i++) {
-        for (u32 j = 0; j < scene->mMeshes[i]->mNumFaces; j++) {
-            totalElementSize += scene->mMeshes[i]->mFaces[j].mNumIndices * sizeof(*scene->mMeshes[i]->mFaces[j].mIndices);
-        }
-    }
-
-    // Allocate buffer memory
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, totalElementSize, NULL, GL_STATIC_DRAW);
-
-    // TODO: process mesh
-    long vboOffset = 0;
-    for (u32 i = 0; i < scene->mNumMeshes; i++)
-    {
-        struct aiMesh *mesh = scene->mMeshes[i];
-        glBufferSubData(GL_ARRAY_BUFFER,
-                        vboOffset,
-                        mesh->mNumVertices * sizeof(*mesh->mVertices),
-                        mesh->mVertices);
-        vboOffset += mesh->mNumVertices * sizeof(*mesh->mVertices);
-    }
-
-    long eboOffset = 0;
-    for (u32 i = 0; i < scene->mNumMeshes; i++)
-    {
-        const struct aiMesh mesh = *scene->mMeshes[i];
-        for (u32 j = 0; j < mesh.mNumFaces; j++)
-        {
-            const struct aiFace face = mesh.mFaces[j];
-            glBufferSubData(GL_ELEMENT_ARRAY_BUFFER,
-                            eboOffset,
-                            face.mNumIndices * sizeof(*face.mIndices),
-                            face.mIndices);
-            eboOffset += face.mNumIndices * sizeof(*face.mIndices);
-        }
-    }
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(vec3), (void *)0);
-    glEnableVertexAttribArray(0);
-
-    glDeleteBuffers(scene->mNumMeshes, &vbo);
-    glDeleteBuffers(scene->mNumMeshes, &ebo);
-
-    // NOTE: after import
-    aiReleaseImport(scene);
-
-    GLenum error = 0;
-    while ((error = glGetError())) {
-        printf("error: %d\n", error);
-    }
-
-    return (Drawable){.vao = vao, .elementCount = eboOffset};
-}
-
 // TODO: make a verrtex struct which can hold various attributes (attributes will be bynamically added (before making it concreate))
 
 // IDEA: every object has its own hierarchy and objects will only hold indices to child objects
@@ -165,26 +75,13 @@ int main(void)
     Window window = init_windowDefault();
     window_hideCursor(&window);
 
-    ShaderFile sList[] = {
-        {"resources/shaders/texture_projection.fs", SHADER_TYPE_FRAGMENT},
-        {"resources/shaders/texture_projection.vs", SHADER_TYPE_VERTEX},
-    };
+    Shader fs_textureProjection = construct_shader("resources/shaders/texture_projection.fs", SHADER_TYPE_FRAGMENT);
+    Shader vs_textureProjection = construct_shader("resources/shaders/texture_projection.vs", SHADER_TYPE_VERTEX);
 
-    ShaderFile s2List[] = {
-        {"resources/shaders/hello.fs", SHADER_TYPE_FRAGMENT},
-        {"resources/shaders/projection.vs", SHADER_TYPE_VERTEX},
-        //{"resources/shaders/projection.vs", SHADER_TYPE_VERTEX},
-    };
+    Shader fs_hello = construct_shader("resources/shaders/hello.fs", SHADER_TYPE_FRAGMENT);
+    Shader vs_projection = construct_shader("resources/shaders/projection.vs", SHADER_TYPE_VERTEX);
 
-    ShaderFile s3List[] = {
-        {"resources/shaders/hello.fs", SHADER_TYPE_FRAGMENT},
-        {"resources/shaders/texture_projection_2dto3d.vs", SHADER_TYPE_VERTEX},
-    };
-
-    ShaderFile s4List[] = {
-        {"resources/shaders/hello.fs", SHADER_TYPE_FRAGMENT},
-        {"resources/shaders/2d.vs", SHADER_TYPE_VERTEX}
-    };
+    Shader vs_2d = construct_shader("resources/shaders/2d.vs", SHADER_TYPE_VERTEX);
 
     // gl settings
     glEnable(GL_DEPTH_TEST);
@@ -198,12 +95,11 @@ int main(void)
     Drawable d = {
         .vao = init_rect_vao(),
         .elementCount = 6,
-        .shader = construct_shaderProgram(sList, 2),
+        .shader = construct_shaderProgram((Shader[]){fs_textureProjection, vs_textureProjection}, 2),
     };
 
-    ShaderProgram helloShader = construct_shaderProgram(s2List, 2);
-    globalShader = construct_shaderProgram(s3List, 2);
-    ShaderProgram shade2d = construct_shaderProgram(s4List, 2);
+    ShaderProgram helloShader = construct_shaderProgram((Shader[]){fs_hello, vs_projection}, 2);
+    ShaderProgram shade2d = construct_shaderProgram((Shader[]){fs_hello, vs_2d}, 2);
     u32 cube = init_cube_vao_textured();
 
     assert(cube);
@@ -240,25 +136,14 @@ int main(void)
     glUniformMatrix4fv(u2Projection, 1, false, (float*)&projection);
     glUniformMatrix4fv(u2Model, 1, false, (float*)&model);
 
-        // move data to shader
-    glUseProgram(globalShader);
-    int u3Projection = glGetUniformLocation(helloShader, "uProjection");
-    int u3View = glGetUniformLocation(helloShader, "uView");
-    int u3Model = glGetUniformLocation(helloShader, "uModel");
-
-    glUniformMatrix4fv(u3View, 1, false, (float*)&view);
-    glUniformMatrix4fv(u3Projection, 1, false, (float*)&projection);
-    glUniformMatrix4fv(u3Model, 1, false, (float*)&model);
-
     // initialize camera
     Camera3D camera = {
         .position = {0, 5, 5},
         .target = {0,0,0},
-        .up = {0,-1,0},
+        .up = {0,1,0},
     };
 
-    Drawable model_drawable = import_example();
-    model_drawable.shader = globalShader;
+    Drawable model_drawable = import_test();
 
     assert(model_drawable.vao);
 
@@ -280,9 +165,6 @@ int main(void)
 
             glUseProgram(helloShader);
             glUniformMatrix4fv(u2View, 1, false, (float*)camera.view);
-
-            glUseProgram(globalShader);
-            glUniformMatrix4fv(u3View, 1, false, (float*)camera.view);
         }
 
         // render settings
@@ -304,7 +186,8 @@ int main(void)
             glUseProgram(shade2d);
             // drawRect((Vec2){10, 10}, (Vec2){100, 100});
 
-            // drawable_draw(model_drawable);
+            model_drawable.shader = d.shader;
+            drawable_draw(model_drawable);
         }
 
         // render gui here

@@ -3,7 +3,7 @@
 #include <glad/glad.h>
 #include <stdio.h>
 
-ShaderProgram construct_shaderProgram(ShaderFile sList[static 1], int shaderCount) {
+ShaderProgram construct_shaderProgram(Shader *shaders, int shaderCount) {
     // create shader
     OpenglShaderProgram shaderProgram = glCreateProgram();
     if (shaderProgram == 0) {
@@ -11,14 +11,7 @@ ShaderProgram construct_shaderProgram(ShaderFile sList[static 1], int shaderCoun
     }
 
     for (int i = 0; i < shaderCount; i++) {
-        OpenglShader shader = construct_shader(sList[i].path, sList[i].type);
-
-        if (!shader) {
-            glDeleteProgram(shaderProgram);
-        }
-
-        glAttachShader(shaderProgram, shader);
-        glDeleteShader(shader);
+        glAttachShader(shaderProgram, shaders[i]);
     }
 
     glLinkProgram(shaderProgram);

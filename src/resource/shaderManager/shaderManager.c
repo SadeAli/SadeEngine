@@ -13,7 +13,6 @@ struct EngineShader_t {
 
 static struct {
     unsigned int numShader;
-    char **shaderPaths;
     Shader *shaders;
 
     unsigned int numShaderProgram;
@@ -41,12 +40,14 @@ bool shaderManager_AppendShaderProgram(ShaderProgram program) {
 }
 
 Shader loadShader(const char *path, ShaderType shaderType) {
-    // if shader previously loaded return loaded shader
+    // TODO: if shader previously loaded return loaded shader
+    /*
     for (unsigned int i = 0; i < shaderManager.numShader; i++) {
         if (strcmp(path, shaderManager.shaderPaths[i])) {
             return shaderManager.shaders[i];
         }
     }
+    */
 
     // if shader not loaded load the shader
     Shader s = construct_shader(path, shaderType);

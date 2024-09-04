@@ -20,5 +20,5 @@ typedef struct ShaderFile_t {
 } ShaderFile;
 
 OpenglShader construct_shader(const char *shaderPath, ShaderType shaderType);
-OpenglShaderProgram construct_shaderProgram(ShaderFile sList[static 1], int shaderCount);
+ShaderProgram construct_shaderProgram(Shader *shaders, int shaderCount);
 void shaderProgram_use(ShaderProgram s);
