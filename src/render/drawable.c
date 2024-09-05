@@ -8,7 +8,6 @@
 #include "stb/stb_image.h"
 
 void drawable_draw(Drawable d) {
-    glUseProgram(d.shader);
     glBindVertexArray(d.vao);
     glDrawElements(GL_TRIANGLES, d.elementCount, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);

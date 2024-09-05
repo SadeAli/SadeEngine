@@ -3,7 +3,6 @@
 typedef struct Drawable_t {
     unsigned int vao;
     unsigned int elementCount;
-    unsigned int shader;
 } Drawable;
 
 void drawable_draw(Drawable d);

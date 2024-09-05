@@ -21,8 +21,8 @@ ShaderProgram construct_shaderProgram(Shader *shaders, int shaderCount) {
     glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
     if (!success) {
         glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-        printf("shaderProgram LINK_FAILED:\n");
-        printf("\t%s\n", infoLog);
+        printf("shaderProgram LINK_FAILED:\n"
+               "\t%s\n", infoLog);
 
         glDeleteProgram(shaderProgram);
         return 0;

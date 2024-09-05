@@ -1,10 +1,4 @@
-#define GLFW_INCLUDE_NONE
-
 // stdlib
-#include <stdlib.h>
-#include <stdio.h>
-#include <math.h>
-#include <time.h>
 #include <assert.h>
 
 // vector/matrix operations
@@ -95,16 +89,16 @@ int main(void)
     Drawable d = {
         .vao = init_rect_vao(),
         .elementCount = 6,
-        .shader = construct_shaderProgram((Shader[]){fs_textureProjection, vs_textureProjection}, 2),
     };
 
+    ShaderProgram textured3dShader = construct_shaderProgram((Shader[]){fs_textureProjection, vs_textureProjection}, 2);
     ShaderProgram helloShader = construct_shaderProgram((Shader[]){fs_hello, vs_projection}, 2);
-    ShaderProgram shade2d = construct_shaderProgram((Shader[]){fs_hello, vs_2d}, 2);
+    ShaderProgram shader2d = construct_shaderProgram((Shader[]){fs_hello, vs_2d}, 2);
     u32 cube = init_cube_vao_textured();
 
     assert(cube);
-    assert(d.shader);
-    assert(shade2d);
+    assert(textured3dShader);
+    assert(shader2d);
     assert(d.vao);
 
     // create matrices
@@ -114,17 +108,17 @@ int main(void)
     glm_perspective(55, 16.0f/9.0f, 0.01f, 1000.0f, projection);
 
     // move data to shader
-    glUseProgram(d.shader);
-    int uProjection = glGetUniformLocation(d.shader, "uProjection");
-    int uView = glGetUniformLocation(d.shader, "uView");
-    int uModel = glGetUniformLocation(d.shader, "uModel");
+    glUseProgram(textured3dShader);
+    int uProjection = glGetUniformLocation(textured3dShader, "uProjection");
+    int uView = glGetUniformLocation(textured3dShader, "uView");
+    int uModel = glGetUniformLocation(textured3dShader, "uModel");
 
     glUniformMatrix4fv(uView, 1, false, (float*)&view);
     glUniformMatrix4fv(uProjection, 1, false, (float*)&projection);
     glUniformMatrix4fv(uModel, 1, false, (float*)&model);
 
-    glUniform1i(glGetUniformLocation(d.shader, "texture1"), 0);
-    glUniform1i(glGetUniformLocation(d.shader, "texture2"), 1);
+    glUniform1i(glGetUniformLocation(textured3dShader, "texture1"), 0);
+    glUniform1i(glGetUniformLocation(textured3dShader, "texture2"), 1);
 
     // move data to shader
     glUseProgram(helloShader);
@@ -137,12 +131,7 @@ int main(void)
     glUniformMatrix4fv(u2Model, 1, false, (float*)&model);
 
     // initialize camera
-    Camera3D camera = {
-        .position = {0, 5, 5},
-        .target = {0,0,0},
-        .up = {0,1,0},
-    };
-
+    Camera3D camera = construct_camera3d((Vector3){1,2,3}, (Vector3){0,0,0});
     Drawable model_drawable = import_test();
 
     assert(model_drawable.vao);
@@ -150,17 +139,20 @@ int main(void)
     // main loop
     bool demo = 1;
     bool request = 0;
-    glm_lookat(camera.position, camera.target, camera.up, camera.view);
     while(!window_shouldClose(&window)) {
 
         // handle logic here
         {
+            Vector3 inputDirection = {
+            };
+
             // camera3d_updateOrbital(&camera, 0.3, 3);
             float sensivity = 0.2;
             const Vector2 mouseDelta = window_getMouseDelta(&window);
             camera3d_updateFirstPerson(&camera, mouseDelta.x * sensivity, mouseDelta.y * sensivity);
+            // camera3d_fly(&camera, inputDirection);
 
-            glUseProgram(d.shader);
+            glUseProgram(textured3dShader);
             glUniformMatrix4fv(uView, 1, false, (float*)camera.view);
 
             glUseProgram(helloShader);
@@ -178,15 +170,15 @@ int main(void)
             drawGrid(helloShader);
 
             if (request) {
-                glUseProgram(d.shader);
+                glUseProgram(textured3dShader);
                 glBindVertexArray(cube);
                 glDrawArrays(GL_TRIANGLES, 0, 36);
             }
 
-            glUseProgram(shade2d);
+            glUseProgram(shader2d);
             // drawRect((Vec2){10, 10}, (Vec2){100, 100});
 
-            model_drawable.shader = d.shader;
+            glUseProgram(textured3dShader);
             drawable_draw(model_drawable);
         }
 
@@ -216,7 +208,7 @@ int main(void)
     // NOTE: clean resources
     glDeleteVertexArrays(1, &model_drawable.vao);
     glDeleteVertexArrays(1, &d.vao);
-    glDeleteProgram(d.shader);
+    glDeleteProgram(textured3dShader);
 
     // NOTE: terminate initialized systems
     window_close(&window);

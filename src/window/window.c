@@ -28,6 +28,11 @@ static inline Vector2 vec2Sub(Vector2 a, Vector2 b) {
 
 static bool glfwStarted = 0;
 
+bool window_isKeyPressed(Window *window, unsigned int key) {
+    // TODO: implement
+    return 0;
+}
+
 void window_centerCursor(Window *window) {
     glfwSetCursorPos(window->glfwWindow, 0, 0);
 }

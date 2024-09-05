@@ -11,7 +11,7 @@ typedef unsigned int u32;
 #include "../../render/drawable.h"
 
 Drawable import_test() {
-    const struct aiScene* scene = aiImportFile( "resources/models/assimp-mdb/model-db/fbx/huesitos.fbx",
+    const struct aiScene* scene = aiImportFile( "resources/models/assimp-mdb/model-db/Obj/Wuson/WusonOBJ.obj",
                 aiProcess_CalcTangentSpace       |
                 aiProcess_Triangulate            |
                 aiProcess_JoinIdenticalVertices  |
