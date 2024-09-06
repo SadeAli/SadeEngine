@@ -10,8 +10,6 @@
 #include <cglm/util.h>
 #include <stdio.h>
 
-// struct Vector3_t {float x, y, z;};
-
 static inline Vector3 camera3d_up(Camera3D *cam) {
     return (Vector3) {
         .x = cam->view[0][1],
@@ -22,23 +20,26 @@ static inline Vector3 camera3d_up(Camera3D *cam) {
 
 static inline Vector3 camera3d_right(Camera3D *cam) {
     return (Vector3) {
-        .x = cam->view[0][0],
-        .y = cam->view[1][0],
-        .z = cam->view[2][0],
+        .x = -cam->view[0][0],
+        .y = -cam->view[1][0],
+        .z = -cam->view[2][0],
     };
 }
 static inline Vector3 camera3d_forward(Camera3D *cam) {
     return (Vector3) {
-        .x = cam->view[0][2],
-        .y = cam->view[1][2],
-        .z = cam->view[2][2],
+        .x = -cam->view[0][2],
+        .y = -cam->view[1][2],
+        .z = -cam->view[2][2],
     };
 }
 
 Camera3D construct_camera3d(Vector3 position, Vector3 target) {
     Camera3D cam;
+
     cam.position = position;
+
     glm_lookat((float *)&position, (float *)&target, (float[]){0,1,0}, cam.view);
+
     return cam;
 }
 
@@ -48,31 +49,47 @@ void camera3d_lookat(Camera3D *cam, Vector3 target, Vector3 up) {
 }
 
 void camera3d_fly(Camera3D *cam, Vector3 displacement) {
-    Vector3 forward = camera3d_forward(cam);
-    Vector3 right = camera3d_right(cam);
-    Vector3 up = camera3d_up(cam);
+    const Vector3 forward = camera3d_forward(cam);
+    const Vector3 right = camera3d_right(cam);
+    const Vector3 up = camera3d_up(cam);
 
-    Vector3 movement = {0};
+    Vector3 forwardDisplacement = camera3d_forward(cam);
+    Vector3 rightDisplacement = camera3d_right(cam);
+    Vector3 upDisplacement = camera3d_up(cam);
 
-    float *f = (float *)&forward;
-    float *r = (float *)&forward;
-    float *u = (float *)&forward;
+    // Scale movement vectors by displacement
+    glm_vec3_scale((float*)&right, displacement.x, (float*)&rightDisplacement);
+    glm_vec3_scale((float*)&up, -displacement.y, (float*)&upDisplacement);
+    glm_vec3_scale((float*)&forward, displacement.z, (float*)&forwardDisplacement);
 
-    glm_vec3_scale(r, displacement.x, r);
-    glm_vec3_scale(u, displacement.y, u);
-    glm_vec3_scale(f, displacement.z, f);
+    // Combine the movements
+    Vector3 movement = {
+        forwardDisplacement.x + upDisplacement.x + rightDisplacement.x,
+        forwardDisplacement.y + upDisplacement.y + rightDisplacement.y,
+        forwardDisplacement.z + upDisplacement.z + rightDisplacement.z
+    };
 
-    cam->position.x += forward.x + up.x + right.x;
-    cam->position.y += forward.y + up.y + right.y;
-    cam->position.z += forward.z + up.z + right.z;
+    // Apply movement to the camera's position
+    glm_vec3_add((float*)&cam->position, (float*)&movement, (float*)&cam->position);
 
-    glm_lookat((float*)&cam->position, f, u, cam->view);
+    // Recalculate the camera's forward and up vectors and adjust the look direction
+    Vector3 target = {
+        cam->position.x + forward.x,
+        cam->position.y + forward.y,
+        cam->position.z + forward.z
+    };
+
+    glm_look((float*)&cam->position, (float*)&forward, (float*)&up, cam->view);
+
+    printf("---------\n");
+    printf("%f %f %f \n", cam->position.x, cam->position.y, cam->position.z);
+    printf("%f %f %f \n", up.x, up.y, up.z);
 }
 
-
 void camera3d_stabilizeUp(Camera3D *cam) {
-    Vector3 up = (Vector3){0, -1, 0};
+    Vector3 up = (Vector3){0, 1, 0};
 
+    // write up direction back to view matrix
     cam->view[0][1] = up.x;
     cam->view[1][1] = up.y;
     cam->view[2][1] = up.z;
@@ -112,27 +129,14 @@ void camera3d_updateFirstPerson(Camera3D *cam, float yaw, float pitch) {
     Vector3 position = cam->position;
 
     Vector3 right = camera3d_right(cam);
-    glm_vec3_negate((float*)&right);
 
     glm_rotate_at(cam->view, (float *)&position, glm_rad(pitch), (float*)&right);
     glm_rotate_at(cam->view, (float *)&position, glm_rad(yaw), (vec3){0,1,0});
-
-    /*
-    printf("---------------------\n"
-            "%.2f %.2f %.2f %.2f\n"
-           "%.2f %.2f %.2f %.2f\n"
-           "%.2f %.2f %.2f %.2f\n"
-           "%.2f %.2f %.2f %.2f\n"
-           , cam->view[0][0], cam->view[0][1], cam->view[0][2], cam->view[0][3]
-           , cam->view[1][0], cam->view[1][1], cam->view[1][2], cam->view[1][3]
-           , cam->view[2][0], cam->view[2][1], cam->view[2][2], cam->view[2][3]
-           , cam->view[3][0], cam->view[3][1], cam->view[3][2], cam->view[3][3]);
-    */
 }
 
-void camera3d_lookAt(Camera3D *cam, vec3 target) {
+void camera3d_lookAt(Camera3D *cam, Vector3 target) {
     Vector3 up = camera3d_up(cam);
     Vector3 position = cam->position;
-    glm_lookat((float*)&position, target, (float*)&up, cam->view);
+    glm_lookat((float*)&position, (float*)&target, (float*)&up, cam->view);
 }
 

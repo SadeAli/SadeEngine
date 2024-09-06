@@ -28,9 +28,9 @@ static inline Vector2 vec2Sub(Vector2 a, Vector2 b) {
 
 static bool glfwStarted = 0;
 
-bool window_isKeyPressed(Window *window, unsigned int key) {
-    // TODO: implement
-    return 0;
+bool window_isKeyDown(Window *window, unsigned int key) {
+    glfwPollEvents();
+    return glfwGetKey(window->glfwWindow, key);
 }
 
 void window_centerCursor(Window *window) {
@@ -40,6 +40,10 @@ void window_centerCursor(Window *window) {
 void window_hideCursor(Window *window) {
     // glfwSetInputMode(window->glfwWindow, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
     glfwSetInputMode(window->glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+}
+
+void window_showCursor(Window *window) {
+    glfwSetInputMode(window->glfwWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 }
 
 void window_resizeCallback(GLFWwindow* window, int width, int height) {

@@ -30,6 +30,7 @@
 
 // custom engine
 #include "window.h"
+#include "inputMap.h"
 #include "gui.h"
 #include "shader.h"
 #include "render/drawable.h"
@@ -143,14 +144,18 @@ int main(void)
 
         // handle logic here
         {
+            float movementSpeed = 0.1;
             Vector3 inputDirection = {
+                movementSpeed * (window_isKeyDown(&window, KEY_D) - window_isKeyDown(&window, KEY_A)),
+                movementSpeed * (window_isKeyDown(&window, KEY_SPACE) - window_isKeyDown(&window, KEY_LEFT_SHIFT)),
+                movementSpeed * (window_isKeyDown(&window, KEY_W) - window_isKeyDown(&window, KEY_S))
             };
 
             // camera3d_updateOrbital(&camera, 0.3, 3);
             float sensivity = 0.2;
             const Vector2 mouseDelta = window_getMouseDelta(&window);
             camera3d_updateFirstPerson(&camera, mouseDelta.x * sensivity, mouseDelta.y * sensivity);
-            // camera3d_fly(&camera, inputDirection);
+            camera3d_fly(&camera, inputDirection);
 
             glUseProgram(textured3dShader);
             glUniformMatrix4fv(uView, 1, false, (float*)camera.view);

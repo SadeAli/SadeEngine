@@ -55,4 +55,6 @@ void window_close(Window *window);
 Vector2 window_getMouseDelta(Window *window);
 Vector2 window_getCursorPos(Window *window);
 void window_hideCursor(Window *window);
+void window_showCursor(Window *window);
 void window_centerCursor(Window *window);
+bool window_isKeyDown(Window *window, unsigned int key);
