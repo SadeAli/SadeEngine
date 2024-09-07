@@ -22,7 +22,7 @@ static struct {
 static EngineShader *loadedShaders = nullptr;
 
 bool shaderManager_AppendShader(Shader shader) {
-    return array_appendDynamic((void **)&shaderManager.shaders,
+    return array_appendAndExpand((void **)&shaderManager.shaders,
                         &shaderManager.numShader,
                         &shaderManager.numShader,
                         sizeof(Shader),
@@ -31,7 +31,7 @@ bool shaderManager_AppendShader(Shader shader) {
 }
 
 bool shaderManager_AppendShaderProgram(ShaderProgram program) {
-    return array_appendDynamic((void **)&shaderManager.shaderPrograms,
+    return array_appendAndExpand((void **)&shaderManager.shaderPrograms,
                             &shaderManager.numShaderProgram,
                             &shaderManager.numShaderProgram,
                             sizeof(ShaderProgram),

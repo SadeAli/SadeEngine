@@ -35,11 +35,8 @@ static inline Vector3 camera3d_forward(Camera3D *cam) {
 
 Camera3D construct_camera3d(Vector3 position, Vector3 target) {
     Camera3D cam;
-
     cam.position = position;
-
-    glm_lookat((float *)&position, (float *)&target, (float[]){0,1,0}, cam.view);
-
+    camera3d_lookat(&cam, target, (Vector3){0,1,0});
     return cam;
 }
 
@@ -81,9 +78,13 @@ void camera3d_fly(Camera3D *cam, Vector3 displacement) {
 
     glm_look((float*)&cam->position, (float*)&forward, (float*)&up, cam->view);
 
-    printf("---------\n");
-    printf("%f %f %f \n", cam->position.x, cam->position.y, cam->position.z);
-    printf("%f %f %f \n", up.x, up.y, up.z);
+    return;
+
+    /* TODO: fix camera up direction
+     * printf("---------\n");
+     * printf("%f %f %f \n", cam->position.x, cam->position.y, cam->position.z);
+     * printf("%f %f %f \n", up.x, up.y, up.z);
+    */
 }
 
 void camera3d_stabilizeUp(Camera3D *cam) {

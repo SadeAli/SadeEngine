@@ -144,6 +144,13 @@ int main(void)
 
         // handle logic here
         {
+            if (window_isKeyDown(&window, KEY_ESCAPE)) {
+                window_showCursor(&window);
+            }
+            else {
+                window_hideCursor(&window);
+            }
+
             float movementSpeed = 0.1;
             Vector3 inputDirection = {
                 movementSpeed * (window_isKeyDown(&window, KEY_D) - window_isKeyDown(&window, KEY_A)),
