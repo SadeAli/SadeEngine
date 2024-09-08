@@ -12,8 +12,35 @@
 #define CIMGUI_USE_OPENGL3
 #include <cimgui_impl.h>
 
+#define GLFW_INCLUDE_NONE
+#include <GLFW/glfw3.h>
+
 #include "window.h"
-#include "GLFW/glfw3.h"
+
+#define KEY_PRESS GLFW_PRESS
+#define KEY_RELEASE GLFW_RELEASE
+#define KEY_REPEAT GLFW_REPEAT
+#define MAX_KEYS 512
+
+// Arrays to track key states
+static char keyState[MAX_KEYS];
+
+void window_key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+void window_resizeCallback(GLFWwindow* window, int width, int height);
+
+void window_key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+    if (key < 0 || key >= MAX_KEYS) {
+        fprintf(stderr, "Invalid key: %d\n", key);
+        return;  // Invalid key
+    }
+
+    keyState[key] = action;
+}
+
+void window_resizeCallback(GLFWwindow* window, int width, int height) {
+    glViewport(0, 0, width, height);
+}
 
 struct Vector2_t {
     float x, y;
@@ -28,8 +55,25 @@ static inline Vector2 vec2Sub(Vector2 a, Vector2 b) {
 
 static bool glfwStarted = 0;
 
+bool window_isKeyRepeat(Window *window, unsigned int key) {
+    if (keyState[key] == KEY_REPEAT) {
+        keyState[key] = KEY_RELEASE;
+        return true;
+    }
+
+    return false;
+}
+
+bool window_isKeyPressed(Window *window, unsigned int key) {
+    if (keyState[key] == KEY_PRESS) {
+        keyState[key] = KEY_RELEASE;
+        return true;
+    }
+
+    return false;
+}
+
 bool window_isKeyDown(Window *window, unsigned int key) {
-    glfwPollEvents();
     return glfwGetKey(window->glfwWindow, key);
 }
 
@@ -46,9 +90,6 @@ void window_showCursor(Window *window) {
     glfwSetInputMode(window->glfwWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 }
 
-void window_resizeCallback(GLFWwindow* window, int width, int height) {
-    glViewport(0, 0, width, height);
-}
 
 Vector2 window_getCursorPos(Window *window) {
     double x, y;
@@ -103,8 +144,8 @@ Window init_window(const WindowSettings ws[static 1])
     igStyleColorsDark(NULL);
 
     glfwSetWindowSizeCallback(glfwWindow, window_resizeCallback);
+    glfwSetKeyCallback(glfwWindow, window_key_callback);
 
-    // glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
     return (Window) {
         .glfwWindow = glfwWindow,
         .settings = *ws,

@@ -58,3 +58,5 @@ void window_hideCursor(Window *window);
 void window_showCursor(Window *window);
 void window_centerCursor(Window *window);
 bool window_isKeyDown(Window *window, unsigned int key);
+bool window_isKeyPressed(Window *window, unsigned int key);
+bool window_isKeyRepeat(Window *window, unsigned int key);

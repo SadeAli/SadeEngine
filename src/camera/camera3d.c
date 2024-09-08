@@ -36,7 +36,7 @@ static inline Vector3 camera3d_forward(Camera3D *cam) {
 Camera3D construct_camera3d(Vector3 position, Vector3 target) {
     Camera3D cam;
     cam.position = position;
-    camera3d_lookat(&cam, target, (Vector3){0,1,0});
+    camera3d_lookat(&cam, target, (Vector3){0,-1,0});
     return cam;
 }
 

@@ -140,15 +140,13 @@ int main(void)
     // main loop
     bool demo = 1;
     bool request = 0;
+    bool showMenu = true;
     while(!window_shouldClose(&window)) {
 
         // handle logic here
-        {
-            if (window_isKeyDown(&window, KEY_ESCAPE)) {
-                window_showCursor(&window);
-            }
-            else {
-                window_hideCursor(&window);
+        { 
+            if (window_isKeyPressed(&window, KEY_TAB)) {
+                showMenu = !showMenu;
             }
 
             float movementSpeed = 0.1;
@@ -161,8 +159,16 @@ int main(void)
             // camera3d_updateOrbital(&camera, 0.3, 3);
             float sensivity = 0.2;
             const Vector2 mouseDelta = window_getMouseDelta(&window);
-            camera3d_updateFirstPerson(&camera, mouseDelta.x * sensivity, mouseDelta.y * sensivity);
-            camera3d_fly(&camera, inputDirection);
+
+            if (showMenu) {
+                window_showCursor(&window);
+            }
+            else {
+                window_hideCursor(&window);
+
+                camera3d_updateFirstPerson(&camera, mouseDelta.x * sensivity, mouseDelta.y * sensivity);
+                camera3d_fly(&camera, inputDirection);
+            }
 
             glUseProgram(textured3dShader);
             glUniformMatrix4fv(uView, 1, false, (float*)camera.view);
@@ -194,9 +200,10 @@ int main(void)
             drawable_draw(model_drawable);
         }
 
-        // render gui here
-        guiBegin();
+        if (showMenu)
         {
+            // render gui here
+            guiBegin();
             bool open = 1;
             if (igBegin("tools", &open, ImGuiConfigFlags_None)) 
             {
@@ -207,8 +214,8 @@ int main(void)
             igEnd();
 
             igShowDemoWindow(&demo);
+            guiEnd();
         }
-        guiEnd();
 
         // post render
         {
