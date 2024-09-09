@@ -12,11 +12,13 @@ struct EngineShader_t {
 };
 
 static struct {
-    unsigned int numShader;
+    char **nameShader;
     Shader *shaders;
+    unsigned int numShader;
 
-    unsigned int numShaderProgram;
+    char **nameShaderProgram;
     ShaderProgram *shaderPrograms;
+    unsigned int numShaderProgram;
 } shaderManager = {0};
 
 static EngineShader *loadedShaders = nullptr;
@@ -39,7 +41,7 @@ bool shaderManager_AppendShaderProgram(ShaderProgram program) {
                             1);
 }
 
-Shader loadShader(const char *path, ShaderType shaderType) {
+Shader shaderManager_loadShaderFromPath(const char *path, ShaderType shaderType) {
     // TODO: if shader previously loaded return loaded shader
     /*
     for (unsigned int i = 0; i < shaderManager.numShader; i++) {
@@ -50,16 +52,18 @@ Shader loadShader(const char *path, ShaderType shaderType) {
     */
 
     // if shader not loaded load the shader
-    Shader s = construct_shader(path, shaderType);
+    Shader s = construct_shaderFromFile(path, shaderType);
     shaderManager_AppendShader(s);
     return s;
 }
 
-bool loadAllShaders(const char *dir);
+char **shaderManager_getShaderList();
 
-bool saveShaderProgramList(const char *dir);
-bool loadShaderProgramList(const char *dir);
+bool shaderManager_loadAllShaders(const char *dir);
+
+bool shaderManager_saveShaderProgramList(const char *dir);
+bool shaderManager_loadShaderProgramList(const char *dir);
 
 // NOTE: requires shader to be loaded before being called
-Shader getShader(const char *name);
-unsigned int getShaderIndex(const char *name);
+Shader shaderManager_getShader(const char *name);
+unsigned int shaderManager_getShaderIndex(const char *name);

@@ -8,5 +8,5 @@ typedef struct FileBuffer_t {
     size_t size;
 } FileBuffer;
 
-FileBuffer init_FileBuffer(FILE *file);
-void free_FileBuffer(FileBuffer f);
+FileBuffer construct_fileBuffer(FILE *file);
+void destruct_fileBuffer(FileBuffer f);

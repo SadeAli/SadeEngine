@@ -70,13 +70,13 @@ int main(void)
     Window window = init_windowDefault();
     window_hideCursor(&window);
 
-    Shader fs_textureProjection = construct_shader("resources/shaders/texture_projection.fs", SHADER_TYPE_FRAGMENT);
-    Shader vs_textureProjection = construct_shader("resources/shaders/texture_projection.vs", SHADER_TYPE_VERTEX);
+    Shader fs_textureProjection = construct_shaderFromFile("resources/shaders/texture_projection.fs", SHADER_TYPE_FRAGMENT);
+    Shader vs_textureProjection = construct_shaderFromFile("resources/shaders/texture_projection.vs", SHADER_TYPE_VERTEX);
 
-    Shader fs_hello = construct_shader("resources/shaders/hello.fs", SHADER_TYPE_FRAGMENT);
-    Shader vs_projection = construct_shader("resources/shaders/projection.vs", SHADER_TYPE_VERTEX);
+    Shader fs_hello = construct_shaderFromFile("resources/shaders/hello.fs", SHADER_TYPE_FRAGMENT);
+    Shader vs_projection = construct_shaderFromFile("resources/shaders/projection.vs", SHADER_TYPE_VERTEX);
 
-    Shader vs_2d = construct_shader("resources/shaders/2d.vs", SHADER_TYPE_VERTEX);
+    Shader vs_2d = construct_shaderFromFile("resources/shaders/2d.vs", SHADER_TYPE_VERTEX);
 
     // gl settings
     glEnable(GL_DEPTH_TEST);

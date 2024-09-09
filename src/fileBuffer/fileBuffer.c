@@ -3,7 +3,7 @@
 #include <stdlib.h>
 
 // NOTE: do not forget to delete FileBuffer data from heap
-FileBuffer init_FileBuffer(FILE *file) {
+FileBuffer construct_fileBuffer(FILE *file) {
     FileBuffer fb = {0};
 
     // get file size
@@ -36,6 +36,6 @@ FileBuffer init_FileBuffer(FILE *file) {
     return fb;
 }
 
-void free_FileBuffer(FileBuffer f) {
+void destruct_fileBuffer(FileBuffer f) {
     free(f.data);
 }

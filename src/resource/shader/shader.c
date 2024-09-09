@@ -1,7 +1,10 @@
+#include <stdlib.h>
+#include <stdio.h>
+
+#include <glad/glad.h>
+
 #include "shader.h"
 #include "fileBuffer.h"
-#include <glad/glad.h>
-#include <stdio.h>
 
 ShaderProgram construct_shaderProgram(Shader *shaders, int shaderCount) {
     // create shader
@@ -31,48 +34,51 @@ ShaderProgram construct_shaderProgram(Shader *shaders, int shaderCount) {
     return shaderProgram;
 }
 
-Shader construct_shader(const char *shaderPath, ShaderType shaderType) {
-    // compile individual shaders
-    OpenglShader shader = glCreateShader(shaderType);
-    if (shader == 0) {
-        return 0;
-    }
-
+Shader construct_shaderFromFile(const char *path, ShaderType type) {
     // open shader file
-    FILE *shaderFile = fopen(shaderPath, "r");
+    FILE *shaderFile = fopen(path, "r");
     if (!shaderFile) {
         perror("open file");
-        glDeleteShader(shader);
         return 0;
     }
 
     // read shader
-    FileBuffer sourceFB = init_FileBuffer(shaderFile);
+    FileBuffer sourceFB = construct_fileBuffer(shaderFile);
     fclose(shaderFile);
     if (!sourceFB.data) {
-        glDeleteShader(0);
         return 0;
     }
 
-    const int lenght = sourceFB.size;
-    glShaderSource(shader, 1, (const char **)&sourceFB.data, &lenght);
+    Shader shader = construct_shaderFromSource(sourceFB.data, sourceFB.size, type);
+    destruct_fileBuffer(sourceFB);
+
+    return shader;
+}
+
+Shader construct_shaderFromSource(const char *source, int sourceLenght, ShaderType type) {
+    // compile individual shaders
+    Shader shader = glCreateShader(type);
+    if (shader == 0) {
+        return 0;
+    }
+
+    // compile
+    glShaderSource(shader, 1, (const char **)&source, &sourceLenght);
     glCompileShader(shader);
 
-    free_FileBuffer(sourceFB);
-
-    // compile shader
-    // WARN: static variable is bad here
-    // TODO: make static infolog dynamic or parametric
-    static char infoLog[GL_INFO_LOG_LENGTH];
+    // check for errors
     int success = 0;
     glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
     if (!success) {
-    glGetShaderInfoLog(shader, 512, NULL, infoLog);
-    printf("shader compilation failed\n"
-           "%s\n"
-           "for: %s\n",
-           infoLog, shaderPath);
-    return 0;
+        // print error log
+        char *infoLog = malloc(GL_INFO_LOG_LENGTH * sizeof(char));
+        glGetShaderInfoLog(shader, 512, NULL, infoLog);
+        printf("shader(%d) compilation failed:\n"
+               "    %s\n", shader, infoLog);
+        free(infoLog);
+
+        // clear shader
+        glDeleteShader(shader);
     }
 
     return shader;
