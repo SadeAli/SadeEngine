@@ -35,7 +35,7 @@
 #include "shader.h"
 #include "render/drawable.h"
 #include "defines.h"
-#include "camera/camera3d.h"
+#include "camera3d.h"
 #include "glShapes.h"
 #include "math/vec.h"
 #include "modelLoader.h"

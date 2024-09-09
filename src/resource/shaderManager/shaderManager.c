@@ -12,12 +12,14 @@ struct EngineShader_t {
 };
 
 static struct {
+    char **pathShader;
     char **nameShader;
     Shader *shaders;
-    unsigned int numShader;
 
     char **nameShaderProgram;
     ShaderProgram *shaderPrograms;
+
+    unsigned int numShader;
     unsigned int numShaderProgram;
 } shaderManager = {0};
 

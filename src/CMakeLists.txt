@@ -21,7 +21,6 @@ add_subdirectory(memory)
 add_subdirectory(render)
 add_subdirectory(resource)
 add_subdirectory(fileBuffer)
-add_subdirectory(camera)
 
 target_compile_options(${PROJECT_NAME} PRIVATE -g -O0 -fsanitize=address)
 
@@ -29,6 +28,7 @@ target_link_libraries(
   ${PROJECT_NAME}
   PRIVATE window
           m
+          camera3d
           cglm
           cimgui
           assimp
