@@ -1,4 +1,1 @@
-add_library(${LIBNAME} grid.c line.c rect.c circle.c)
-target_link_libraries(${LIBNAME} glad shader)
-
-set_property(TARGET ${LIBNAME} PROPERTY C_STANDARD 23)
+target_sources(glShapes PRIVATE grid.c line.c rect.c circle.c)

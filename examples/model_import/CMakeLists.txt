@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.10)
-project(ballsam)
+project(import_example)
 
 # Set the path to SadeEngine
 set(SADE_ENGINE_PATH ../../)
 
-add_executable(${PROJECT_NAME} src/main.cpp)
+add_executable(${PROJECT_NAME} src/main.c)
 
 # Add SadeEngine to the project
 add_subdirectory(${SADE_ENGINE_PATH} sadeEngine)

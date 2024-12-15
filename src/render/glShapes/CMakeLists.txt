@@ -1,6 +1,7 @@
-set(LIBNAME glShapes)
+add_library(glShapes STATIC)
 
 add_subdirectory(src)
 
-target_include_directories(${LIBNAME} PUBLIC include)
-target_include_directories(${LIBNAME} PRIVATE internal)
+target_link_libraries(glShapes PRIVATE glad shader defines)
+target_include_directories(glShapes PUBLIC include)
+target_include_directories(glShapes PRIVATE internal)

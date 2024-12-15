@@ -1,11 +1,11 @@
 #define STB_IMAGE_IMPLEMENTATION
 // #define STBI_FAILURE_USERMSG //generate user friendly error messages
 
-#include "defines.h"
-#include "glad/glad.h"
-#include "drawable.h"
+#include <stdbool.h>
 #include <stdio.h>
-#include "stb/stb_image.h"
+#include <glad/glad.h>
+#include <stb/stb_image.h>
+#include "drawable.h"
 
 void drawable_draw(Drawable d) {
     glBindVertexArray(d.vao);
@@ -13,7 +13,7 @@ void drawable_draw(Drawable d) {
     glBindVertexArray(0);
 }
 
-unsigned int init_vao(float *vertices, u32 vertexCount, u32 *indices, u32 indexCount) {
+unsigned int init_vao(float *vertices, unsigned int vertexCount, unsigned int *indices, unsigned int indexCount) {
     unsigned int VAO;
     glGenVertexArrays(1, &VAO);  
 
@@ -29,7 +29,7 @@ unsigned int init_vao(float *vertices, u32 vertexCount, u32 *indices, u32 indexC
     glBufferData(GL_ARRAY_BUFFER, sizeof(float)*3*vertexCount, vertices, GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(u32)*indexCount , indices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int)*indexCount , indices, GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);  
@@ -51,15 +51,15 @@ unsigned int init_rect_vao() {
         -0.5f,  0.5f, 0.0f   // top left 
     };
 
-    u32 indices[] = {  // note that we start from 0!
+    unsigned int indices[] = {  // note that we start from 0!
         0, 1, 3,   // first triangle
         1, 2, 3    // second triangle
     };  
 
-    return init_vao(vertices, sizeof(vertices) / 3 / sizeof(float), indices, sizeof(indices) / sizeof(u32));
+    return init_vao(vertices, sizeof(vertices) / 3 / sizeof(float), indices, sizeof(indices) / sizeof(unsigned int));
 }
 
-u32 init_cube_vao_textured() {
+unsigned int init_cube_vao_textured() {
     float vertices[] = {
         -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
          0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
