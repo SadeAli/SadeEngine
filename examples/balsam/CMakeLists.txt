@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 project(ballsam)
 
 # Set the path to SadeEngine
-set(SADE_ENGINE_PATH ../../src)
+set(SADE_ENGINE_PATH ../../)
 
 add_executable(${PROJECT_NAME} src/main.cpp)
 

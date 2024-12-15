@@ -1,8 +1,8 @@
 typedef unsigned int u32;
 
 #include <assimp/cimport.h>
-#include <assimp/include/assimp/postprocess.h>
-#include <assimp/include/assimp/scene.h>
+#include <assimp/postprocess.h>
+#include <assimp/scene.h>
 
 #include <glad/glad.h>
 #include <stdio.h>
