@@ -59,7 +59,6 @@ unsigned int init_rect_vao() {
     return init_vao(vertices, sizeof(vertices) / 3 / sizeof(float), indices, sizeof(indices) / sizeof(u32));
 }
 
-// WARN: not implemented
 u32 init_cube_vao_textured() {
     float vertices[] = {
         -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,

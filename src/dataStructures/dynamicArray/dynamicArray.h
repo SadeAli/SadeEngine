@@ -1,6 +1,5 @@
 #pragma once
 
-#include "defines.h"
 #include <stdio.h>
 
 typedef unsigned int u32;
@@ -12,7 +11,7 @@ struct ArrayDescriptor_t {
     const u32 unitSize;
 };
 
-bool array_appendAndExpand(void **array, u32 *size, u32 *capacity, u32 unitSize, const void *appendData, u32 capacityIncrement);
+bool array_append(void **array, u32 *size, u32 *capacity, const u32 unitSize, const void *appendData, const u32 capacityIncrement);
 
 // TODO: make a better array descriptor
 bool array_appendDynamic(void **array, ArrayDescriptor *descriptor, const void *appendData, u32 capacityIncrement);

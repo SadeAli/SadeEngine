@@ -2,10 +2,20 @@
 
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
-#define CIMGUI_DEFINE_ENUMS_AND_STRUCTS
-#include <cimgui.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#define WINDOW_SETTINGS_DEFAULT {         \
+            .title = (char *)"title",    \
+            .width = 1920,               \
+            .height = 1080,              \
+            .fps = 60,                   \
+};
 
 typedef struct Vector2_t Vector2;
+typedef struct ImGuiContext ImGuiContext;
 
 typedef struct WindowSettings
 {
@@ -39,15 +49,15 @@ typedef struct Window_t {
  * @brief an initializer for window calls init window with default window settings
  */
 #define INIT_WINDOW(...)                                                                                               \
-    init_window(&(WindowSettings){.width = 1920, .height = 1080, .fps = 60, .title = "myLeaf", __VA_ARGS__})
+    init_window(&(WindowSettings){.width = 1920, .height = 1080, .fps = 60, .title = "default title", __VA_ARGS__})
 
 // window settings related
 WindowSettings init_windowSettingsDefault();
 
 // window related
-Window init_window(const WindowSettings ws[static 1]);
+Window init_window(const WindowSettings *ws);
 Window init_windowDefault();
-bool window_shouldClose(Window *window);
+bool window_shouldClose(Window window);
 void window_swapBuffers(Window *window);
 double window_getFrameTime(Window *window);
 void window_pollEvents();
@@ -60,3 +70,7 @@ void window_centerCursor(Window *window);
 bool window_isKeyDown(Window *window, unsigned int key);
 bool window_isKeyPressed(Window *window, unsigned int key);
 bool window_isKeyRepeat(Window *window, unsigned int key);
+
+#ifdef __cplusplus
+}
+#endif

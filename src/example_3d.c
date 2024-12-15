@@ -17,6 +17,7 @@
 
 // opengl loader
 #include <glad/glad.h>
+#include <stdio.h>
 
 // GUI libs
 #define CIMGUI_DEFINE_ENUMS_AND_STRUCTS
@@ -50,25 +51,24 @@ struct Engine
 } engine = {
     .windowSettings =
         {
-            .fps = 60,
-            .height = 1080,
+            .title = (char *)"myLeaf",
             .width = 1920,
-            .title = "myLeaf",
+            .height = 1080,
+            .fps = 60,
         },
 };
-
+//
 // TODO: make a verrtex struct which can hold various attributes (attributes will be bynamically added (before making it concreate))
 
 // IDEA: every object has its own hierarchy and objects will only hold indices to child objects
 // TODO: systems
 
-
-// NOTE: main
 int main(void)
 {
     // window init
     Window window = init_windowDefault();
-    window_hideCursor(&window);
+
+    const char *shaderDirectory = "resources/shaders/";
 
     Shader fs_textureProjection = construct_shaderFromFile("resources/shaders/texture_projection.fs", SHADER_TYPE_FRAGMENT);
     Shader vs_textureProjection = construct_shaderFromFile("resources/shaders/texture_projection.vs", SHADER_TYPE_VERTEX);
@@ -114,6 +114,16 @@ int main(void)
     int uView = glGetUniformLocation(textured3dShader, "uView");
     int uModel = glGetUniformLocation(textured3dShader, "uModel");
 
+    // TODO: set view and projection 
+    {
+        // sent variables
+        mat4 *m_model = &model;
+        
+        // locals
+        ;
+
+    }
+
     glUniformMatrix4fv(uView, 1, false, (float*)&view);
     glUniformMatrix4fv(uProjection, 1, false, (float*)&projection);
     glUniformMatrix4fv(uModel, 1, false, (float*)&model);
@@ -141,7 +151,8 @@ int main(void)
     bool demo = 1;
     bool request = 0;
     bool showMenu = true;
-    while(!window_shouldClose(&window)) {
+    bool isSelected[10] = {0};
+    while(!window_shouldClose(window)) {
 
         // handle logic here
         { 
@@ -179,8 +190,8 @@ int main(void)
 
         // render settings
         {
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             glClearColor(105 / 255.0, 18 / 255.0, 18 / 255.0, 1);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         }
 
         // render objects here
@@ -207,8 +218,42 @@ int main(void)
             bool open = 1;
             if (igBegin("tools", &open, ImGuiConfigFlags_None)) 
             {
-                if (igButton("add cube", (ImVec2){0, 0})) {
+                if (igButton("toggle cube", (ImVec2){0, 0})) {
                     request = !request;
+                }
+            }
+            igEnd();
+
+            if (igBegin("objects", &open, ImGuiWindowFlags_None))
+            {
+                ImVec2 a;
+                igGetContentRegionAvail(&a);
+                igBeginListBox("##objs", (ImVec2){a.x, 120});
+                igGetContentRegionAvail(&a);
+                for (int i = 0; i < 5; i++)
+                {
+                    char str[50];
+                    sprintf(str, "%d", i);
+                    igButton(str, (ImVec2){a.x, 30});
+                }
+                igEndListBox();
+
+                if (igTreeNode_Str("test")) {
+                    igGetContentRegionAvail(&a);
+
+                    igBeginMultiSelect(ImGuiMultiSelectFlags_None, -1, -1);
+
+                    if (igSelectable_Bool("selTest", isSelected[0], ImGuiSelectableFlags_None, (ImVec2){a.x, 20})) {
+                        isSelected[0] = !isSelected[0];
+                    }
+                    if (igSelectable_Bool("sel2", isSelected[1], ImGuiSelectableFlags_None, (ImVec2){a.x, 20})) {
+                        isSelected[1] = !isSelected[1];
+                    }
+                    if (igSelectable_Bool("seluc", isSelected[2], ImGuiSelectableFlags_None, (ImVec2){a.x, 20})) {
+                        isSelected[2] = !isSelected[2];
+                    }
+                    igLabelText("", "testinki");
+                    igTreePop();
                 }
             }
             igEnd();

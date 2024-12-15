@@ -1,5 +1,4 @@
 #include "dynamicArray.h"
-#include "defines.h"
 #include <string.h>
 #include <stdlib.h>
 
@@ -28,7 +27,7 @@ bool array_appendDynamic(void **array, ArrayDescriptor *d, const void *appendDat
     return true;
 }
 
-bool array_appendAndExpand(void **array, u32 *size, u32 *capacity, u32 unitSize, const void *appendData, u32 capacityIncrement)
+bool array_append(void **array, u32 *size, u32 *capacity, const u32 unitSize, const void *appendData, const u32 capacityIncrement)
 {
     // dont bother with pointers (it's dangerous you know)
     u32 localCapacity = *capacity;

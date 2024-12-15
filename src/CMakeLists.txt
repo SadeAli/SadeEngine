@@ -1,23 +1,35 @@
+cmake_minimum_required(VERSION 3.21)
+project(sadeEngine)
+
+# set(CC clang)
+set(CMAKE_C_COMPILER_ID "clang")
+
+# Set output directory for executables
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
+
 include(${PROJECT_SOURCE_DIR}/cmake/cimgui.cmake)
 
-# Include directories
-include_directories(${PROJECT_SOURCE_DIR}/src)
-include_directories(${PROJECT_SOURCE_DIR}/src/memory)
-include_directories(${PROJECT_SOURCE_DIR}/src/external)
-include_directories(${PROJECT_SOURCE_DIR}/src/external/gladFiles)
 # include_directories(${PROJECT_SOURCE_DIR}/src/math)
 
-# Source files
-set(SOURCES main.c)
+add_library(${PROJECT_NAME} STATIC)
+target_sources(${PROJECT_NAME} PRIVATE)
 
-# Executable
-add_executable(${PROJECT_NAME} ${SOURCES})
+# DEEPRECATED set(SOURCES example_3d.c) add_executable(${PROJECT_NAME}
+# ${SOURCES})
+
+# Include directories
+target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/memory)
+
+include_directories(
+  ${PROJECT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/external/gladFiles
+  ${PROJECT_SOURCE_DIR}/external)
 
 # Add subdirectories add_subdirectory(relativePosition)
 # add_subdirectory(editorClasses) add_subdirectory(vector)
 add_subdirectory(external)
 add_subdirectory(window)
-add_subdirectory(memory)
+add_subdirectory(dataStructures)
 add_subdirectory(render)
 add_subdirectory(resource)
 add_subdirectory(fileBuffer)
@@ -47,9 +59,9 @@ add_subdirectory(external/assimp)
 # Disable treating warnings as errors for Assimp
 target_compile_options(assimp PRIVATE -Wno-error)
 
-# Add resources
-add_custom_command(
-  TARGET ${PROJECT_NAME}
-  POST_BUILD
-  COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/resources
-          $<TARGET_FILE_DIR:${PROJECT_NAME}>/resources)
+# Add resources add_custom_command( TARGET ${PROJECT_NAME} POST_BUILD COMMAND
+# ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/../resources
+# $<TARGET_FILE_DIR:${PROJECT_NAME}>/resources)
+
+set_property(TARGET ${PROJECT_NAME} PROPERTY C_STANDARD 23)
+set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 17)

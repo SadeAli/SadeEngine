@@ -5,11 +5,10 @@
 
 #include <glad/glad.h>
 
-#define CIMGUI_DEFINE_ENUMS_AND_STRUCTS
-#include <cimgui.h>
-
 #define CIMGUI_USE_GLFW
 #define CIMGUI_USE_OPENGL3
+#define CIMGUI_DEFINE_ENUMS_AND_STRUCTS
+#include <cimgui.h>
 #include <cimgui_impl.h>
 
 #define GLFW_INCLUDE_NONE
@@ -105,7 +104,8 @@ Vector2 window_getMouseDelta(Window *window) {
     return delta;
 }
 
-Window init_window(const WindowSettings ws[static 1])
+
+Window init_window(const WindowSettings *ws)
 {
     // only 1 window is permitted
     assert(!glfwStarted);
@@ -164,12 +164,12 @@ Window init_windowDefault() {
     return init_window(&ws);
 }
 
-bool window_shouldClose(Window *window) {
-    if (window->glfwWindow == nullptr) {
+bool window_shouldClose(Window window) {
+    if (window.glfwWindow == nullptr) {
         return true;
     }
 
-    return glfwWindowShouldClose(window->glfwWindow);
+    return glfwWindowShouldClose(window.glfwWindow);
 }
 
 void window_pollEvents() {

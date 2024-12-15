@@ -1,5 +1,5 @@
 #pragma once
 
-#include "resource/shader/shader.h"
+#include "shader.h"
 
 void drawGrid(OpenglShader s);
