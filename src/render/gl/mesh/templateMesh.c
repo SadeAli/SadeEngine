@@ -106,7 +106,7 @@ void mesh_uploadToGPU(Mesh *mesh) {
         glEnableVertexAttribArray(attr->location);
 
         // Update the offset for the next attribute
-        offset += attr->numComponents * sizeof(GLfloat);
+        offset += attr->numComponents * getTypeSize(attr->type);
     }
 
     // Unbind the VAO to prevent accidental modification

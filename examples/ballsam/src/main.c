@@ -47,12 +47,10 @@ int main(void) {
 
     Mesh mesh = {0};
     mesh_addVertexAttribute(&mesh, 0, 2, GL_FLOAT, GL_FALSE);
-    mesh_addVertexAttribute(&mesh, 0, 2, GL_FLOAT, GL_FALSE);
-
     mesh.vertexCount = vCount;
     mesh.indexCount = iCount;
     mesh.indices = indices;
-    mesh_assignInterleavedData(&mesh, (void*[]){vertexPositions, vertexPositions});
+    mesh_assignInterleavedData(&mesh, (void*[]){vertexPositions});
 
     mesh_uploadToGPU(&mesh);
 

@@ -12,6 +12,8 @@ typedef struct {
 } GLVertexAttribute;
 
 typedef struct Mesh_t {
+    // TODO: add public private indicator (_)
+    
     // gpu storage
     GLuint              vao;                // Vertex Array Object
     GLuint              vbo;                // Vertex Buffer Object
