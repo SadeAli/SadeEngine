@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <sadeEngine.h>
 #include <math/vector/vector2.h>
+#include <math/vector/vector3.h>
 #include <sadeGL.h>
 #include <defines.h>
 #include <shape_generator.h>
@@ -40,10 +41,17 @@ int main(void) {
     size_t iCount = 3 * segmentCount;
     float radius = 0.2f;
     Vector2 *vertexPositions = malloc(vCount * sizeof(Vector2));
+    Vector3 *vertexColors = malloc(vCount * sizeof(Vector3));
     uint *indices = malloc(iCount * sizeof(uint));
     assert(vertexPositions && indices);
     generateCircleVertices2D(vertexPositions, segmentCount, radius);
     generateCircleIndices(indices, segmentCount);
+
+    for (uint i = 0; i < vCount; i++) {
+        vertexColors[i].x = (float)(rand() % 10000) / 10000;
+        vertexColors[i].y = (float)(rand() % 10000) / 10000;
+        vertexColors[i].z = (float)(rand() % 10000) / 10000;
+    }
 
     Mesh mesh = {0};
     mesh_addVertexAttribute(&mesh, 0, 2, GL_FLOAT, GL_FALSE);
