@@ -1,11 +1,13 @@
 #pragma once
 
-#define GLFW_INCLUDE_NONE
-#include <GLFW/glfw3.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#define GLFW_INCLUDE_NONE
+#include <GLFW/glfw3.h>
+
+#include "defines.h"
 
 #define WINDOW_SETTINGS_DEFAULT {         \
             .title = (char *)"title",    \

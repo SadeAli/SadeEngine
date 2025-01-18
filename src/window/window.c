@@ -131,7 +131,7 @@ Window init_window(const WindowSettings *ws)
     // glfwSwapInterval(1);
 
     // load opengl functions
-    int version = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);;
+    int version = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
     assert (version != 0);
 
     // NOTE: no need to use glViewport since ImGui_ImplGlfw_InitForOpenGL does that for us

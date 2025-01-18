@@ -1,4 +1,5 @@
 #include <glad/glad.h>
+#include <color/color.h>
 #include "render.h"
 
 void clearBG(const Color c) {

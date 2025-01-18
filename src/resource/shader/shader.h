@@ -19,7 +19,13 @@ typedef struct ShaderFile_t {
     ShaderType type;
 } ShaderFile;
 
+// shader
+Shader shader_loadFromFile(const char *path, ShaderType type);
 Shader construct_shaderFromFile(const char *path, ShaderType type);
 Shader construct_shaderFromSource(const char *source, int sourceLenght, ShaderType type);
+void shader_free(Shader s);
+
+// shader program
 ShaderProgram construct_shaderProgram(Shader *shaders, int shaderCount);
+ShaderProgram shaderProgram_fromShaders(Shader *shaders, int shaderCount);
 void shaderProgram_use(ShaderProgram s);

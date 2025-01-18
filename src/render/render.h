@@ -4,9 +4,7 @@
 extern "C" {
 #endif
 
-typedef struct Color_t {
-    int r, g, b, a;
-} Color;
+#include <color.h>
 
 void clearBG(const Color c);
 

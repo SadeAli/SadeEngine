@@ -20,7 +20,10 @@ target_include_directories(
 
 # Add subdirectories
 add_subdirectory(window)
-add_subdirectory(dataStructures)
+add_subdirectory(math)
+add_subdirectory(sadeCore)
+add_subdirectory(shape_generator)
+add_subdirectory(common)
 add_subdirectory(render)
 add_subdirectory(resource)
 add_subdirectory(fileBuffer)
@@ -29,14 +32,14 @@ add_subdirectory(fileBuffer)
 target_link_libraries(
   ${PROJECT_NAME}
   INTERFACE window
-            m
-            cglm
-            glad
+            math
+            color
+            vec
             assimp
+            shape_generator
             render
-            dynamicArray
-            shaderManager
             shader
+            sadeCore
             modelLoader
             -fsanitize=address)
 
@@ -46,6 +49,7 @@ target_compile_options(assimp PRIVATE -Wno-error)
 # Set C and C++ standards
 set_property(TARGET ${PROJECT_NAME} PROPERTY C_STANDARD 11)
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 17)
+
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 

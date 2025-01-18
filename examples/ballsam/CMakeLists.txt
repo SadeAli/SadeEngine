@@ -1,10 +1,10 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.20)
 project(ballsam)
 
 # Set the path to SadeEngine
 set(SADE_ENGINE_PATH ../../)
 
-add_executable(${PROJECT_NAME} src/main.cpp)
+add_executable(${PROJECT_NAME} src/main.c)
 
 # Add SadeEngine to the project
 add_subdirectory(${SADE_ENGINE_PATH} sadeEngine)
@@ -13,3 +13,5 @@ add_subdirectory(${SADE_ENGINE_PATH} sadeEngine)
 include_directories(${SADE_ENGINE_PATH})
 
 target_link_libraries(${PROJECT_NAME} sadeEngine)
+
+target_compile_options(${PROJECT_NAME} PRIVATE -O0 -Wunused -Wunreachable-code -Wpedantic -Wall -Wextra -Wunused-function -Wunused-variable)

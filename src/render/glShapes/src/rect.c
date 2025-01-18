@@ -1,5 +1,5 @@
 #include <glad/glad.h>
-#include "vec.h"
+#include <vec.h>
 
 void drawRect(Vec2 pos, Vec2 size) {
     const float vertices[] = {

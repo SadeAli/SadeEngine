@@ -1,7 +1,7 @@
 #include <glad/glad.h>
 
-#include "defines.h"
-#include "math/vec.h"
+#include <defines.h>
+#include <vec.h>
 
 void drawLine3D(Vec3 a, Vec3 b) {
     u32 vao;

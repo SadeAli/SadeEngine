@@ -6,6 +6,9 @@
 #include "shader.h"
 #include "fileBuffer.h"
 
+ShaderProgram shaderProgram_fromShaders(Shader *shaders, int shaderCount) {
+    return construct_shaderProgram(shaders, shaderCount);
+}
 ShaderProgram construct_shaderProgram(Shader *shaders, int shaderCount) {
     // create shader
     OpenglShaderProgram shaderProgram = glCreateProgram();
@@ -32,6 +35,10 @@ ShaderProgram construct_shaderProgram(Shader *shaders, int shaderCount) {
     }
 
     return shaderProgram;
+}
+
+Shader shader_loadFromFile(const char *path, ShaderType type) {
+    return construct_shaderFromFile(path, type);
 }
 
 Shader construct_shaderFromFile(const char *path, ShaderType type) {
@@ -86,4 +93,8 @@ Shader construct_shaderFromSource(const char *source, int sourceLenght, ShaderTy
 
 void shaderProgram_use(ShaderProgram s) {
     glUseProgram(s);
+}
+
+void shader_free(Shader s) {
+    glDeleteShader(s);
 }

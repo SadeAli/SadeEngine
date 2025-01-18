@@ -1,4 +1,4 @@
-add_library(glad STATIC glad.c)
+add_library(glad SHARED glad.c)
 
 target_include_directories(glad PRIVATE .)
 target_include_directories(glad PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

@@ -43,7 +43,7 @@ void createCircleVBO(int segments, GLuint *vao, GLuint *vbo) {
 }
 
 void renderCircles(GLuint vao, GLuint vbo, int segments) {
-    // Use instance rendering to draw multiple circles in a single call
+    // TODO: Use instance rendering to draw multiple circles in a single call
     glBindVertexArray(vao);
     glDrawArrays(GL_TRIANGLE_FAN, 0, segments + 2);  // Render the circle
     glBindVertexArray(0);
