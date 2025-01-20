@@ -12,6 +12,6 @@ add_subdirectory(${SADE_ENGINE_PATH} sadeEngine)
 # Include SadeEngine headers
 include_directories(${SADE_ENGINE_PATH})
 
-target_link_libraries(${PROJECT_NAME} sadeEngine)
+target_link_libraries(${PROJECT_NAME} sadeEngine -fsanitize=address)
 
-target_compile_options(${PROJECT_NAME} PRIVATE -O0 -Wunused -Wunreachable-code -Wpedantic -Wall -Wextra -Wunused-function -Wunused-variable)
+target_compile_options(${PROJECT_NAME} PRIVATE -O0 -Wunused -Wunreachable-code -Wpedantic -Wunused-function -Wunused-variable)
